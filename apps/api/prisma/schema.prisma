@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ChannelType {
+  AVITO
+  TELEGRAM
+}
+
+enum ConversationStatus {
+  NEW
+  OPEN
+  WAITING
+  CLOSED
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageAuthorType {
+  CUSTOMER
+  MANAGER
+  AI
+  SYSTEM
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  displayName  String
+  role         UserRole @default(MANAGER)
+  isActive     Boolean  @default(true)
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assignedConversations Conversation[] @relation("ConversationAssignee")
+}
+
+model ChannelAccount {
+  id           String      @id @default(uuid())
+  type         ChannelType
+  displayName  String
+  externalId   String
+  accessToken  String?
+  refreshToken String?
+  tokenExpiresAt DateTime?
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  conversations Conversation[]
+  listings      Listing[]
+
+  @@unique([type, externalId])
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  displayName String?
+  externalId  String?
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  conversations Conversation[]
+}
+
+model Listing {
+  id               String   @id @default(uuid())
+  channelAccountId String
+  externalId       String
+  title            String
+  url              String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  channelAccount ChannelAccount @relation(fields: [channelAccountId], references: [id])
+  conversations  Conversation[]
+
+  @@unique([channelAccountId, externalId])
+}
+
+model Conversation {
+  id               String             @id @default(uuid())
+  channelAccountId String
+  customerId       String?
+  listingId        String?
+  assigneeId       String?
+  externalId       String
+  status           ConversationStatus @default(NEW)
+  lastMessageAt    DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  channelAccount ChannelAccount @relation(fields: [channelAccountId], references: [id])
+  customer       Customer?      @relation(fields: [customerId], references: [id])
+  listing        Listing?       @relation(fields: [listingId], references: [id])
+  assignee       User?          @relation("ConversationAssignee", fields: [assigneeId], references: [id])
+  messages       Message[]
+
+  @@unique([channelAccountId, externalId])
+  @@index([status, lastMessageAt])
+}
+
+model Message {
+  id             String            @id @default(uuid())
+  conversationId String
+  externalId     String?
+  direction      MessageDirection
+  authorType     MessageAuthorType
+  text           String
+  sentAt         DateTime
+  createdAt      DateTime          @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+
+  @@unique([conversationId, externalId])
+  @@index([conversationId, sentAt])
+}
+
+model KnowledgeDocument {
+  id        String   @id @default(uuid())
+  title     String
+  source    String?
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chunks KnowledgeChunk[]
+}
+
+model KnowledgeChunk {
+  id         String @id @default(uuid())
+  documentId String
+  content    String
+  embedding  Unsupported("vector")?
+  createdAt  DateTime @default(now())
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id])
+}

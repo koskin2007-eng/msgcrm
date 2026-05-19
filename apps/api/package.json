@@ -1,0 +1,39 @@
+{
+  "name": "@ai-manager/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "prisma generate --schema prisma/schema.prisma && nest build",
+    "start": "node dist/main.js",
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "db:push": "prisma db push --schema prisma/schema.prisma",
+    "db:seed": "node prisma/seed.mjs",
+    "typecheck": "prisma generate --schema prisma/schema.prisma && tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@ai-manager/shared": "0.1.0",
+    "@nestjs/common": "^11.1.21",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.1.21",
+    "@nestjs/platform-express": "^11.1.21",
+    "@prisma/client": "^5.22.0",
+    "bullmq": "^5.76.10",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "ioredis": "^5.10.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.21",
+    "@nestjs/schematics": "^11.1.0",
+    "@nestjs/testing": "^11.1.21",
+    "@types/node": "^22.19.19",
+    "prisma": "^5.22.0",
+    "typescript": "^5.9.3"
+  }
+}

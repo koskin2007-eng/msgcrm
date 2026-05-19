@@ -1,0 +1,17 @@
+{
+	admin off
+}
+
+msgcrm.ru, www.msgcrm.ru {
+	redir https://crm.msgcrm.ru{uri} permanent
+}
+
+crm.msgcrm.ru {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3000
+}
+
+api.msgcrm.ru {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3001
+}
