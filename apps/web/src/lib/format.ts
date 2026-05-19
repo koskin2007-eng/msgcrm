@@ -46,7 +46,7 @@ export function platformLabel(platform: Platform) {
   return labels[platform];
 }
 
-export function roleLabel(role: UserRole) {
+export function roleLabel(role: UserRole | Uppercase<UserRole>) {
   const labels: Record<UserRole, string> = {
     owner: "owner",
     admin: "admin",
@@ -54,7 +54,7 @@ export function roleLabel(role: UserRole) {
     viewer: "viewer"
   };
 
-  return labels[role];
+  return labels[role.toLowerCase() as UserRole];
 }
 
 export function conversationStatusLabel(status: ConversationStatus) {

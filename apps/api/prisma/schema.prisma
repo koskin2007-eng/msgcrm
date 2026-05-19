@@ -32,12 +32,29 @@ enum MessageAuthorType {
 }
 
 enum UserRole {
+  OWNER
   ADMIN
   MANAGER
+  VIEWER
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  channelAccounts    ChannelAccount[]
+  customers          Customer[]
+  listings           Listing[]
+  conversations      Conversation[]
+  knowledgeDocuments KnowledgeDocument[]
 }
 
 model User {
   id           String   @id @default(uuid())
+  companyId    String?
   email        String   @unique
   displayName  String
   role         UserRole @default(MANAGER)
@@ -46,11 +63,31 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  company               Company?       @relation(fields: [companyId], references: [id])
+  sessions              Session[]
   assignedConversations Conversation[] @relation("ConversationAssignee")
+
+  @@index([companyId])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model ChannelAccount {
   id           String      @id @default(uuid())
+  companyId    String?
   type         ChannelType
   displayName  String
   externalId   String
@@ -61,25 +98,32 @@ model ChannelAccount {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
+  company       Company?       @relation(fields: [companyId], references: [id])
   conversations Conversation[]
   listings      Listing[]
 
+  @@index([companyId])
   @@unique([type, externalId])
 }
 
 model Customer {
   id          String   @id @default(uuid())
+  companyId   String?
   displayName String?
   externalId  String?
   phone       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  company       Company?       @relation(fields: [companyId], references: [id])
   conversations Conversation[]
+
+  @@index([companyId])
 }
 
 model Listing {
   id               String   @id @default(uuid())
+  companyId        String?
   channelAccountId String
   externalId       String
   title            String
@@ -87,14 +131,17 @@ model Listing {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  company        Company?       @relation(fields: [companyId], references: [id])
   channelAccount ChannelAccount @relation(fields: [channelAccountId], references: [id])
   conversations  Conversation[]
 
+  @@index([companyId])
   @@unique([channelAccountId, externalId])
 }
 
 model Conversation {
   id               String             @id @default(uuid())
+  companyId        String?
   channelAccountId String
   customerId       String?
   listingId        String?
@@ -105,6 +152,7 @@ model Conversation {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
+  company        Company?       @relation(fields: [companyId], references: [id])
   channelAccount ChannelAccount @relation(fields: [channelAccountId], references: [id])
   customer       Customer?      @relation(fields: [customerId], references: [id])
   listing        Listing?       @relation(fields: [listingId], references: [id])
@@ -112,6 +160,7 @@ model Conversation {
   messages       Message[]
 
   @@unique([channelAccountId, externalId])
+  @@index([companyId])
   @@index([status, lastMessageAt])
 }
 
@@ -133,13 +182,17 @@ model Message {
 
 model KnowledgeDocument {
   id        String   @id @default(uuid())
+  companyId String?
   title     String
   source    String?
   body      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  chunks KnowledgeChunk[]
+  company Company?         @relation(fields: [companyId], references: [id])
+  chunks  KnowledgeChunk[]
+
+  @@index([companyId])
 }
 
 model KnowledgeChunk {

@@ -1,15 +1,59 @@
 import { PrismaClient } from "@prisma/client";
+import { randomBytes, scrypt as scryptCallback } from "node:crypto";
+import { promisify } from "node:util";
 
 const prisma = new PrismaClient();
+const scrypt = promisify(scryptCallback);
+const KEY_LENGTH = 64;
+
+async function hashPassword(password) {
+  const salt = randomBytes(16).toString("hex");
+  const derivedKey = await scrypt(password, salt, KEY_LENGTH);
+
+  return `scrypt:${salt}:${Buffer.from(derivedKey).toString("hex")}`;
+}
+
+async function getPasswordHashFromEnv() {
+  const password = process.env.INITIAL_OWNER_PASSWORD;
+
+  if (!password) {
+    return undefined;
+  }
+
+  return hashPassword(password);
+}
 
 async function main() {
-  const manager = await prisma.user.upsert({
-    where: { email: "manager@msgcrm.ru" },
-    update: {},
+  const company = await prisma.company.upsert({
+    where: { id: "company_autoplus" },
+    update: {
+      name: "AutoPlus"
+    },
     create: {
-      email: "manager@msgcrm.ru",
-      displayName: "Manager",
-      role: "ADMIN"
+      id: "company_autoplus",
+      name: "AutoPlus"
+    }
+  });
+
+  const ownerEmail =
+    process.env.INITIAL_OWNER_EMAIL?.trim().toLowerCase() || "pavel@example.com";
+  const ownerName = process.env.INITIAL_OWNER_NAME?.trim() || "Pavel";
+  const passwordHash = await getPasswordHashFromEnv();
+
+  const manager = await prisma.user.upsert({
+    where: { email: ownerEmail },
+    update: {
+      companyId: company.id,
+      displayName: ownerName,
+      role: "OWNER",
+      ...(passwordHash ? { passwordHash } : {})
+    },
+    create: {
+      companyId: company.id,
+      email: ownerEmail,
+      displayName: ownerName,
+      role: "OWNER",
+      ...(passwordHash ? { passwordHash } : {})
     }
   });
 
@@ -20,8 +64,11 @@ async function main() {
         externalId: "demo-avito-profile"
       }
     },
-    update: {},
+    update: {
+      companyId: company.id
+    },
     create: {
+      companyId: company.id,
       type: "AVITO",
       externalId: "demo-avito-profile",
       displayName: "Avito demo profile"
@@ -35,8 +82,11 @@ async function main() {
         externalId: "demo-telegram-bot"
       }
     },
-    update: {},
+    update: {
+      companyId: company.id
+    },
     create: {
+      companyId: company.id,
       type: "TELEGRAM",
       externalId: "demo-telegram-bot",
       displayName: "Telegram demo bot"
@@ -45,9 +95,12 @@ async function main() {
 
   const avitoCustomer = await prisma.customer.upsert({
     where: { id: "demo-customer-avito" },
-    update: {},
+    update: {
+      companyId: company.id
+    },
     create: {
       id: "demo-customer-avito",
+      companyId: company.id,
       externalId: "avito-customer-001",
       displayName: "Avito customer"
     }
@@ -55,9 +108,12 @@ async function main() {
 
   const telegramCustomer = await prisma.customer.upsert({
     where: { id: "demo-customer-telegram" },
-    update: {},
+    update: {
+      companyId: company.id
+    },
     create: {
       id: "demo-customer-telegram",
+      companyId: company.id,
       externalId: "telegram-customer-001",
       displayName: "Telegram lead"
     }
@@ -70,8 +126,11 @@ async function main() {
         externalId: "demo-listing-001"
       }
     },
-    update: {},
+    update: {
+      companyId: company.id
+    },
     create: {
+      companyId: company.id,
       channelAccountId: avitoAccount.id,
       externalId: "demo-listing-001",
       title: "Demo listing",
@@ -87,10 +146,14 @@ async function main() {
       }
     },
     update: {
+      companyId: company.id,
+      customerId: avitoCustomer.id,
+      listingId: listing.id,
       assigneeId: manager.id,
       lastMessageAt: new Date("2026-05-19T12:42:00.000Z")
     },
     create: {
+      companyId: company.id,
       channelAccountId: avitoAccount.id,
       customerId: avitoCustomer.id,
       listingId: listing.id,
@@ -109,10 +172,13 @@ async function main() {
       }
     },
     update: {
+      companyId: company.id,
+      customerId: telegramCustomer.id,
       assigneeId: manager.id,
       lastMessageAt: new Date("2026-05-19T12:31:00.000Z")
     },
     create: {
+      companyId: company.id,
       channelAccountId: telegramAccount.id,
       customerId: telegramCustomer.id,
       assigneeId: manager.id,

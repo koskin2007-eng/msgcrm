@@ -1,8 +1,9 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AppLayout } from "../../components/layout/AppLayout";
+import { LogoutButton } from "../../components/layout/LogoutButton";
 import { Button } from "../../components/ui/Button";
 import { PageHeader } from "../../components/ui/PageHeader";
-import { company, currentUser } from "../../lib/mock-data";
+import { fetchAuthSession } from "../../lib/auth-server";
 import { roleLabel } from "../../lib/format";
 
 const settingsSections = [
@@ -14,35 +15,44 @@ const settingsSections = [
   "Интеграции"
 ];
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await fetchAuthSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
     <AppLayout>
       <section className="page-content">
-        <PageHeader description="Настройки компании, профиля и будущих прав доступа." title="Настройки" />
+        <PageHeader
+          description="Настройки компании, профиля и будущих прав доступа."
+          title="Настройки"
+        />
 
         <section className="settings-summary">
           <div>
             <span>Название компании</span>
-            <strong>{company.name}</strong>
+            <strong>{session.company.name}</strong>
           </div>
           <div>
             <span>Текущий пользователь</span>
-            <strong>{currentUser.name}</strong>
+            <strong>{session.user.displayName}</strong>
           </div>
           <div>
             <span>Роль</span>
-            <strong>{roleLabel(currentUser.role)}</strong>
+            <strong>{roleLabel(session.user.role)}</strong>
           </div>
-          <Link className="button button-secondary" href="/login">
-            Выйти
-          </Link>
+          <LogoutButton />
         </section>
 
         <div className="settings-grid">
           {settingsSections.map((section) => (
             <section className="settings-card" key={section}>
               <h3>{section}</h3>
-              <p>Раздел подготовлен под будущую backend-логику и права workspace.</p>
+              <p>
+                Раздел подготовлен под будущую backend-логику и права workspace.
+              </p>
               <Button variant="ghost">Открыть</Button>
             </section>
           ))}

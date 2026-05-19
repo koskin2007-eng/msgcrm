@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Building2 } from "lucide-react";
-import { Button } from "../../components/ui/Button";
-import { Input } from "../../components/ui/Input";
+import { RegisterForm } from "../../components/auth/RegisterForm";
 
 export default function RegisterPage() {
   return (
@@ -20,29 +19,13 @@ export default function RegisterPage() {
         </div>
 
         <h1>Создать аккаунт</h1>
-        <p>После регистрации будет создан пользователь, компания/workspace и роль owner.</p>
+        <p>
+          После регистрации будет создан пользователь MsgCRM, отдельная
+          компания/workspace и роль owner. Подключенные аккаунты Авито, Telegram
+          и других площадок добавляются позже в разделе интеграций.
+        </p>
 
-        <form className="auth-form two-columns">
-          <label>
-            Имя
-            <Input defaultValue="Павел" />
-          </label>
-          <label>
-            Email
-            <Input defaultValue="pavel@example.com" type="email" />
-          </label>
-          <label>
-            Пароль
-            <Input defaultValue="demo-password" type="password" />
-          </label>
-          <label>
-            Название компании
-            <Input defaultValue="АвтоПлюс" />
-          </label>
-          <Button className="span-2" type="submit">
-            Создать аккаунт
-          </Button>
-        </form>
+        <RegisterForm />
 
         <Link className="auth-link" href="/login">
           Уже есть аккаунт

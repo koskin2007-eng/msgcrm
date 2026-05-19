@@ -6,8 +6,11 @@ import { PrismaService } from "../prisma/prisma.service.js";
 export class InboxService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async listConversations() {
+  async listConversations(companyId: string) {
     const conversations = await this.prisma.conversation.findMany({
+      where: {
+        companyId
+      },
       include: {
         channelAccount: true,
         customer: true,
@@ -67,9 +70,12 @@ export class InboxService {
     });
   }
 
-  async getConversation(id: string) {
-    const conversation = await this.prisma.conversation.findUnique({
-      where: { id },
+  async getConversation(id: string, companyId: string) {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: {
+        id,
+        companyId
+      },
       include: {
         channelAccount: true,
         customer: true,
@@ -124,9 +130,16 @@ export class InboxService {
     };
   }
 
-  async createOutboundMessage(conversationId: string, text: string) {
-    const conversation = await this.prisma.conversation.findUnique({
-      where: { id: conversationId }
+  async createOutboundMessage(
+    conversationId: string,
+    companyId: string,
+    text: string
+  ) {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        companyId
+      }
     });
 
     if (!conversation) {

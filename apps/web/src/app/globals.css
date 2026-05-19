@@ -900,6 +900,16 @@ td {
   gap: 14px;
 }
 
+.form-error {
+  border: 1px solid rgb(239 68 68 / 28%);
+  border-radius: 12px;
+  background: var(--red-soft);
+  color: #b91c1c;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .auth-form.two-columns {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
