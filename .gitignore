@@ -18,7 +18,7 @@ uploads/
 backups/
 tmp/
 
-# Local databases and data files
+# Local databases, exports, and data files
 *.db
 *.sqlite
 *.sqlite3
@@ -36,11 +36,14 @@ tmp/
 data/
 storage/
 
-# Secrets and credentials
+# Secrets, credentials, keys, and cookies
+secrets/
+credentials/
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
-secrets/
-credentials/
+*.cookie
+*.cookies
+cookies.txt

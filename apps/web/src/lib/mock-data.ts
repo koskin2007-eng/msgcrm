@@ -21,7 +21,7 @@ export const currentUser: User = {
   id: "user_1",
   companyId: company.id,
   name: "Павел",
-  email: "pavel@example.com",
+  email: "owner@example.test",
   role: "owner"
 };
 
@@ -174,7 +174,7 @@ export const conversations: Conversation[] = [
     connectedAccountId: "account_avito_1",
     listingId: "listing_masks",
     customerName: "Иван",
-    customerPhone: "+7 900 123-45-67",
+    customerPhone: "mock-phone",
     customerPickupPoint: "Москва, ПВЗ на Тверской",
     lastMessage: "А доставка до ПВЗ сколько будет?",
     status: "new",
@@ -192,7 +192,7 @@ export const conversations: Conversation[] = [
     connectedAccountId: "account_avito_auto",
     listingId: "listing_tires",
     customerName: "Сергей",
-    customerPhone: "+7 921 222-30-40",
+    customerPhone: "mock-phone",
     customerPickupPoint: "Санкт-Петербург, ПВЗ Озерки",
     lastMessage: "Торг есть?",
     status: "in_progress",
@@ -210,7 +210,7 @@ export const conversations: Conversation[] = [
     connectedAccountId: "account_avito_2",
     listingId: "listing_iphone",
     customerName: "Анна",
-    customerPhone: "+7 925 555-14-00",
+    customerPhone: "mock-phone",
     customerPickupPoint: "Москва, самовывоз",
     lastMessage: "Можно сегодня забрать?",
     status: "ready_to_deal",
@@ -355,7 +355,7 @@ export const teamMembers: TeamMember[] = [
     id: "user_1",
     companyId: company.id,
     name: "Павел",
-    email: "pavel@example.com",
+    email: "owner@example.test",
     role: "owner",
     status: "active",
     joinedAt: "2026-05-01T09:00:00.000Z"
@@ -364,7 +364,7 @@ export const teamMembers: TeamMember[] = [
     id: "user_2",
     companyId: company.id,
     name: "Мария",
-    email: "maria@example.com",
+    email: "manager@example.test",
     role: "manager",
     status: "active",
     joinedAt: "2026-05-04T12:00:00.000Z"
@@ -373,7 +373,7 @@ export const teamMembers: TeamMember[] = [
     id: "user_3",
     companyId: company.id,
     name: "Олег",
-    email: "oleg@example.com",
+    email: "viewer@example.test",
     role: "viewer",
     status: "invited",
     joinedAt: "2026-05-18T11:20:00.000Z"

@@ -14,8 +14,8 @@ MsgCRM is a multi-channel CRM for sellers who receive messages from Avito accoun
 - RAM: 6 GB
 - Disk: 80 GB NVMe
 - Network: 1 Gbit/s
-- Public IPv4: 155.212.219.57
-- Initial SSH access: verified as root
+- Public IPv4: stored outside the repository
+- Initial SSH access: verified during setup; operational credentials are not stored in Git
 - Current host name: ai-manager-prod
 
 ## MVP Scope
@@ -124,10 +124,7 @@ MsgCRM is a multi-channel CRM for sellers who receive messages from Avito accoun
 
 ## SSH Access
 
-- Primary SSH user: `deploy`
-- Local private key path: `%USERPROFILE%\.ssh\ai_manager_deploy_ed25519`
-- Public key fingerprint: `SHA256:k+Isak1z+NaOT6pbgE8SdF2sD/nTNNKIETl4XFXLmNw`
-- `deploy` has sudo access and Docker group access.
+- SSH operational details are stored outside the repository.
 - SSH password login is disabled.
 - Direct root SSH login is disabled.
 - Root password is locked.

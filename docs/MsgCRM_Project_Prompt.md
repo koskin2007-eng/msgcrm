@@ -858,7 +858,7 @@ Mock-объявления:
 {
   "id": "user_1",
   "name": "Павел",
-  "email": "pavel@example.com",
+  "email": "owner@example.test",
   "role": "owner",
   "companyId": "company_1"
 }

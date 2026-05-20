@@ -36,7 +36,7 @@ async function main() {
   });
 
   const ownerEmail =
-    process.env.INITIAL_OWNER_EMAIL?.trim().toLowerCase() || "pavel@example.com";
+    process.env.INITIAL_OWNER_EMAIL?.trim().toLowerCase() || "owner@example.test";
   const ownerName = process.env.INITIAL_OWNER_NAME?.trim() || "Pavel";
   const passwordHash = await getPasswordHashFromEnv();
 
