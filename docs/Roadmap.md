@@ -75,6 +75,10 @@ Features:
 - register user;
 - create company/workspace;
 - login/logout;
+- login by email and password;
+- profile fields: phone number, user name, email, password, company name;
+- password recovery by email reset link;
+- future password recovery by phone/SMS code after phone verification is implemented;
 - roles;
 - team invitations;
 - workspace-specific data.
