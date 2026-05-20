@@ -1,25 +1,31 @@
-import { UserPlus } from "lucide-react";
+import { redirect } from "next/navigation";
 import { AppLayout } from "../../components/layout/AppLayout";
+import { InviteTeamMemberForm } from "../../components/team/InviteTeamMemberForm";
 import { TeamTable } from "../../components/team/TeamTable";
-import { Button } from "../../components/ui/Button";
 import { PageHeader } from "../../components/ui/PageHeader";
-import { teamMembers } from "../../lib/mock-data";
+import { fetchAuthSession } from "../../lib/auth-server";
+import { fetchTeamMembers } from "../../lib/team-server";
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const session = await fetchAuthSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const members = (await fetchTeamMembers()) ?? [];
+
   return (
-    <AppLayout>
+    <AppLayout session={session}>
       <section className="page-content">
         <PageHeader
-          actions={
-            <Button>
-              <UserPlus size={16} />
-              Пригласить сотрудника
-            </Button>
-          }
-          description="Пользователи внутри компании клиента. Права позже будут влиять на доступ к разделам."
+          description="Пользователи внутри компании клиента. Сейчас роли отображаются и готовят будущие права доступа."
           title="Команда"
         />
-        <TeamTable members={teamMembers} />
+        <div className="team-layout">
+          <InviteTeamMemberForm />
+          <TeamTable members={members} />
+        </div>
       </section>
     </AppLayout>
   );

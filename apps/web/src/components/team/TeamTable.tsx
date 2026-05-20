@@ -5,11 +5,23 @@ import { Badge } from "../ui/Badge";
 function statusLabel(status: TeamMember["status"]) {
   const labels: Record<TeamMember["status"], string> = {
     active: "активен",
-    invited: "приглашение отправлено",
+    invited: "приглашение добавлено",
     blocked: "заблокирован"
   };
 
   return labels[status];
+}
+
+function statusTone(status: TeamMember["status"]) {
+  if (status === "active") {
+    return "green";
+  }
+
+  if (status === "blocked") {
+    return "red";
+  }
+
+  return "orange";
 }
 
 export function TeamTable({ members }: { members: TeamMember[] }) {
@@ -34,7 +46,9 @@ export function TeamTable({ members }: { members: TeamMember[] }) {
                 <Badge tone="blue">{roleLabel(member.role)}</Badge>
               </td>
               <td>
-                <Badge tone={member.status === "active" ? "green" : "orange"}>{statusLabel(member.status)}</Badge>
+                <Badge tone={statusTone(member.status)}>
+                  {statusLabel(member.status)}
+                </Badge>
               </td>
               <td>{formatDate(member.joinedAt)}</td>
             </tr>

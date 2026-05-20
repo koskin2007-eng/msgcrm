@@ -130,6 +130,23 @@ Phone is needed for seller workflows, but existing registered users may not have
 
 ---
 
+## 2026-05-20 — Team invitations MVP
+
+Decision:
+
+- Team members are real `User` records filtered by the authenticated user's `companyId`.
+- `/team` should read members from `GET /api/team/members`.
+- MVP invitations use `POST /api/team/invitations` and create an inactive user inside the same workspace.
+- Only `OWNER` and `ADMIN` roles can create invitations.
+- Invited users do not receive real email yet and cannot log in until a future invitation acceptance/password setup flow is added.
+- The MVP invite form allows `admin`, `manager`, and `viewer`, but not another `owner`.
+
+Reason:
+
+This gives the CRM a real company/team boundary without building a full permission system or email delivery before the product workflow is ready.
+
+---
+
 ## 2026-05-20 — Personal data storage rule
 
 Decision:

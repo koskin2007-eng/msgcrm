@@ -1,5 +1,27 @@
 # MsgCRM — Changelog
 
+## 2026-05-20 — Team API and workspace invitations
+
+Added the first database-backed team workflow:
+
+- added `GET /api/team/members` for members inside the current workspace;
+- added `POST /api/team/invitations` for MVP employee invitations;
+- connected `/team` to backend data instead of mock team data;
+- added invite form for name, email, and role;
+- invited users are stored as inactive users in the company workspace until email invitation flow is implemented.
+
+Updated files:
+
+- apps/api/src/modules/team
+- apps/api/src/modules/app.module.ts
+- apps/web/src/app/team/page.tsx
+- apps/web/src/components/team
+- docs/MsgCRM_Project_Prompt.md
+- docs/Decisions.md
+- docs/Roadmap.md
+
+---
+
 ## 2026-05-20 — Profile phone and personal data page
 
 Added user profile updates for the current authentication flow:

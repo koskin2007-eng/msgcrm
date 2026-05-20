@@ -82,7 +82,8 @@ Features:
 - password recovery by email reset link;
 - future password recovery by phone/SMS code after phone verification is implemented;
 - roles;
-- team invitations;
+- database-backed team members;
+- MVP team invitations;
 - workspace-specific data.
 
 ---

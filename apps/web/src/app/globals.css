@@ -686,6 +686,7 @@ td {
 .delivery-form-card,
 .delivery-result-card,
 .profile-card,
+.team-invite-card,
 .settings-card,
 .settings-summary,
 .table-wrap,
@@ -708,6 +709,7 @@ td {
 .delivery-form-card h2,
 .delivery-result-card h2,
 .profile-card h2,
+.team-invite-card h2,
 .settings-card h3 {
   font-size: 16px;
 }
@@ -905,6 +907,64 @@ td {
   color: #b91c1c;
 }
 
+.team-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.team-invite-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.team-invite-card p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.team-invite-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(220px, 1fr) 180px auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.team-invite-form label {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-invite-actions {
+  display: flex;
+  align-items: center;
+}
+
+.team-message,
+.team-error {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-message {
+  border: 1px solid rgb(34 197 94 / 28%);
+  background: var(--green-soft);
+  color: #15803d;
+}
+
+.team-error {
+  border: 1px solid rgb(239 68 68 / 28%);
+  background: var(--red-soft);
+  color: #b91c1c;
+}
+
 .settings-summary {
   flex-wrap: wrap;
   margin-bottom: 16px;
@@ -1048,7 +1108,8 @@ td {
   }
 
   .inbox-workspace,
-  .delivery-layout {
+  .delivery-layout,
+  .team-invite-form {
     grid-template-columns: 1fr;
   }
 
