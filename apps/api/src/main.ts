@@ -11,6 +11,12 @@ function getAllowedCorsOrigins() {
 
   if (process.env.NODE_ENV !== "production") {
     configuredOrigins.push("http://localhost:3000", "http://127.0.0.1:3000");
+  } else {
+    configuredOrigins.push(
+      "https://crm.msgcrm.ru",
+      "https://msgcrm.ru",
+      "https://www.msgcrm.ru"
+    );
   }
 
   return Array.from(new Set(configuredOrigins));

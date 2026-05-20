@@ -15,7 +15,7 @@ export function getPublicApiUrl() {
 
   const { hostname, protocol } = window.location;
 
-  if (hostname === "crm.msgcrm.ru" || hostname.endsWith(".msgcrm.ru")) {
+  if (hostname === "msgcrm.ru" || hostname.endsWith(".msgcrm.ru")) {
     return "https://api.msgcrm.ru";
   }
 
