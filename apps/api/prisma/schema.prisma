@@ -57,6 +57,7 @@ model User {
   companyId    String?
   email        String   @unique
   displayName  String
+  phone        String?
   role         UserRole @default(MANAGER)
   isActive     Boolean  @default(true)
   passwordHash String?

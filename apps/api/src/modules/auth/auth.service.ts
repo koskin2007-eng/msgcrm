@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException
@@ -10,6 +11,7 @@ import { PasswordService } from "./password.service.js";
 import { PrismaService } from "../prisma/prisma.service.js";
 import type { LoginDto } from "./dto/login.dto.js";
 import type { RegisterDto } from "./dto/register.dto.js";
+import type { UpdateProfileDto } from "./dto/update-profile.dto.js";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -30,6 +32,14 @@ export class AuthService {
 
   async register(dto: RegisterDto, request: AuthenticatedRequest) {
     const email = normalizeEmail(dto.email);
+    const displayName = dto.name.trim();
+    const phone = dto.phone.trim();
+    const companyName = dto.companyName.trim();
+
+    if (!displayName || !phone || !companyName) {
+      throw new BadRequestException("Name, phone and company name are required");
+    }
+
     const existingUser = await this.prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
@@ -39,14 +49,15 @@ export class AuthService {
     const passwordHash = await this.passwordService.hash(dto.password);
     const company = await this.prisma.company.create({
       data: {
-        name: dto.companyName.trim()
+        name: companyName
       }
     });
 
     const user = await this.prisma.user.create({
       data: {
         email,
-        displayName: dto.name.trim(),
+        displayName,
+        phone,
         passwordHash,
         role: "OWNER",
         companyId: company.id
@@ -142,6 +153,7 @@ export class AuthService {
       id: session.user.id,
       email: session.user.email,
       displayName: session.user.displayName,
+      phone: session.user.phone,
       role: session.user.role,
       companyId: session.user.companyId,
       company: {
@@ -151,10 +163,55 @@ export class AuthService {
     };
   }
 
+  async updateProfile(user: NonNullable<AuthenticatedRequest["user"]>, dto: UpdateProfileDto) {
+    const email = normalizeEmail(dto.email);
+    const displayName = dto.displayName.trim();
+    const phone = dto.phone.trim();
+    const companyName = dto.companyName.trim();
+
+    if (!displayName || !phone || !companyName) {
+      throw new BadRequestException("Name, phone and company name are required");
+    }
+
+    const existingUser = await this.prisma.user.findUnique({ where: { email } });
+
+    if (existingUser && existingUser.id !== user.id) {
+      throw new ConflictException("User with this email already exists");
+    }
+
+    const updatedUser = await this.prisma.$transaction(async (tx) => {
+      await tx.company.update({
+        where: {
+          id: user.companyId
+        },
+        data: {
+          name: companyName
+        }
+      });
+
+      return tx.user.update({
+        where: {
+          id: user.id
+        },
+        data: {
+          displayName,
+          email,
+          phone
+        },
+        include: {
+          company: true
+        }
+      });
+    });
+
+    return this.toAuthResponse(updatedUser);
+  }
+
   toAuthResponse(user: {
     id: string;
     email: string;
     displayName: string;
+    phone: string | null;
     role: "OWNER" | "ADMIN" | "MANAGER" | "VIEWER";
     company: {
       id: string;
@@ -170,6 +227,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         displayName: user.displayName,
+        phone: user.phone,
         role: user.role
       },
       company: {

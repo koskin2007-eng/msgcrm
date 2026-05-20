@@ -10,6 +10,7 @@ import {
   Plug,
   Settings,
   Truck,
+  UserRound,
   Users
 } from "lucide-react";
 import { connectedAccounts } from "../../lib/mock-data";
@@ -24,6 +25,7 @@ const menuItems = [
   { href: "/integrations", label: "Интеграции", icon: Plug },
   { href: "/team", label: "Команда", icon: Users },
   { href: "/delivery", label: "Доставка", icon: Truck },
+  { href: "/profile", label: "Личные данные", icon: UserRound },
   { href: "/settings", label: "Настройки", icon: Settings }
 ];
 

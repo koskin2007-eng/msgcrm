@@ -114,6 +114,22 @@ Email/password is enough for the first working authentication flow. Phone should
 
 ---
 
+## 2026-05-20 — Profile and phone implementation
+
+Decision:
+
+- `User.phone` is stored in Prisma as nullable `String?`.
+- Registration requires a phone value in the UI/API, but the database field remains nullable to avoid breaking existing users.
+- `/auth/me` returns the current user's phone together with user and company data.
+- Profile updates use `PATCH /api/auth/profile` and update only the authenticated user's record and their own company/workspace.
+- The repository must contain only placeholders or mock-safe values, not real profile data.
+
+Reason:
+
+Phone is needed for seller workflows, but existing registered users may not have a phone yet. Keeping the column nullable makes the migration safer while the UI can still require the value for new registrations.
+
+---
+
 ## 2026-05-20 — Personal data storage rule
 
 Decision:

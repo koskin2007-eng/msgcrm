@@ -4,7 +4,7 @@ export const SESSION_COOKIE_NAME = "msgcrm_session";
 
 export type AuthenticatedUser = Pick<
   User,
-  "id" | "email" | "displayName" | "role" | "companyId"
+  "id" | "email" | "displayName" | "phone" | "role" | "companyId"
 > & {
   companyId: string;
   company: Pick<Company, "id" | "name">;
@@ -44,6 +44,7 @@ export interface PublicUser {
   id: string;
   email: string;
   displayName: string;
+  phone: string | null;
   role: UserRole;
 }
 

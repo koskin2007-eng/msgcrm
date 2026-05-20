@@ -10,6 +10,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,7 +24,8 @@ export function RegisterForm() {
         name,
         email,
         password,
-        companyName
+        companyName,
+        phone
       });
       window.location.assign("/inbox");
     } catch (submitError) {
@@ -77,6 +79,17 @@ export function RegisterForm() {
           onChange={(event) => setCompanyName(event.target.value)}
           required
           value={companyName}
+        />
+      </label>
+      <label className="span-2">
+        Телефон
+        <Input
+          autoComplete="tel"
+          onChange={(event) => setPhone(event.target.value)}
+          placeholder="+7 999 123-45-67"
+          required
+          type="tel"
+          value={phone}
         />
       </label>
       {error ? <p className="form-error span-2">{error}</p> : null}

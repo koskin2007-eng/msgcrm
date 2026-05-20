@@ -5,6 +5,7 @@ export interface AuthSession {
     id: string;
     email: string;
     displayName: string;
+    phone: string | null;
     role: AuthRole;
   };
   company: {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service.js";
 import { clearSessionCookie, setSessionCookie } from "./session-cookie.js";
 import type {
@@ -9,6 +9,7 @@ import type {
 import { CurrentUser } from "./decorators/current-user.decorator.js";
 import { LoginDto } from "./dto/login.dto.js";
 import { RegisterDto } from "./dto/register.dto.js";
+import { UpdateProfileDto } from "./dto/update-profile.dto.js";
 import { AuthGuard } from "./guards/auth.guard.js";
 
 @Controller("auth")
@@ -55,9 +56,19 @@ export class AuthController {
         id: user!.id,
         email: user!.email,
         displayName: user!.displayName,
+        phone: user!.phone,
         role: user!.role
       },
       company: user!.company
     };
+  }
+
+  @Patch("profile")
+  @UseGuards(AuthGuard)
+  updateProfile(
+    @CurrentUser() user: AuthenticatedRequest["user"],
+    @Body() body: UpdateProfileDto
+  ): Promise<AuthResponse> {
+    return this.authService.updateProfile(user!, body);
   }
 }

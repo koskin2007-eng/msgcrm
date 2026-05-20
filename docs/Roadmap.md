@@ -17,6 +17,7 @@ Pages:
 - `/integrations`
 - `/team`
 - `/delivery`
+- `/profile`
 - `/settings`
 
 Core UI:
@@ -76,7 +77,8 @@ Features:
 - create company/workspace;
 - login/logout;
 - login by email and password;
-- profile fields: phone number, user name, email, password, company name;
+- registration phone field;
+- personal data page for user name, phone, email, and company name;
 - password recovery by email reset link;
 - future password recovery by phone/SMS code after phone verification is implemented;
 - roles;

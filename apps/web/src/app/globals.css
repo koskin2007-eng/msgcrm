@@ -685,6 +685,7 @@ td {
 .template-card,
 .delivery-form-card,
 .delivery-result-card,
+.profile-card,
 .settings-card,
 .settings-summary,
 .table-wrap,
@@ -706,6 +707,7 @@ td {
 .template-card h3,
 .delivery-form-card h2,
 .delivery-result-card h2,
+.profile-card h2,
 .settings-card h3 {
   font-size: 16px;
 }
@@ -854,6 +856,53 @@ td {
 
 .delivery-result-list span {
   color: var(--muted);
+}
+
+.profile-card {
+  display: grid;
+  max-width: 760px;
+  gap: 18px;
+  padding: 18px;
+}
+
+.profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.profile-form label {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-message,
+.profile-error {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.profile-message {
+  border: 1px solid rgb(34 197 94 / 28%);
+  background: var(--green-soft);
+  color: #15803d;
+}
+
+.profile-error {
+  border: 1px solid rgb(239 68 68 / 28%);
+  background: var(--red-soft);
+  color: #b91c1c;
 }
 
 .settings-summary {
@@ -1028,6 +1077,7 @@ td {
   .template-grid,
   .settings-grid,
   .form-grid,
+  .profile-form,
   .auth-form.two-columns {
     grid-template-columns: 1fr;
   }

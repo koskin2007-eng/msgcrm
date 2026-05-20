@@ -37,12 +37,34 @@ async function getResponseMessage(response: Response) {
   return message || body?.error || `Request failed with status ${response.status}`;
 }
 
+export interface ProfileUpdatePayload {
+  displayName: string;
+  phone: string;
+  email: string;
+  companyName: string;
+}
+
 export async function postAuthRequest(path: "login" | "logout" | "register", data?: unknown) {
   const response = await fetch(`${getPublicApiUrl()}/api/auth/${path}`, {
     method: "POST",
     headers: data ? { "Content-Type": "application/json" } : undefined,
     credentials: "include",
     body: data ? JSON.stringify(data) : undefined
+  });
+
+  if (!response.ok) {
+    throw new Error(await getResponseMessage(response));
+  }
+
+  return response.json();
+}
+
+export async function patchProfileRequest(data: ProfileUpdatePayload) {
+  const response = await fetch(`${getPublicApiUrl()}/api/auth/profile`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data)
   });
 
   if (!response.ok) {

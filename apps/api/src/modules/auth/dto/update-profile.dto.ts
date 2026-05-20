@@ -1,20 +1,16 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
-export class RegisterDto {
+export class UpdateProfileDto {
   @IsString()
   @MinLength(2)
-  name!: string;
-
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  @MinLength(8)
-  password!: string;
+  displayName!: string;
 
   @IsString()
   @IsNotEmpty()
   phone!: string;
+
+  @IsEmail()
+  email!: string;
 
   @IsString()
   @MinLength(2)
