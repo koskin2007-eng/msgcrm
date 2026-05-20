@@ -4,6 +4,40 @@ This file stores key project decisions.
 
 ---
 
+## 2026-05-21 — Avito Messenger API tariff limitation and product focus
+
+Decision:
+
+Official Avito Messenger API integration is available only for accounts/categories that have the required Avito subscription level. According to the current project research note:
+
+- Goods and Jobs: Messenger API is available only on the “Максимальный” subscription level.
+- Services: Messenger API is available on “Расширенный” and “Максимальный” subscription levels.
+- Messenger API methods should be used with the main company account authorization key. Employee authorization keys have restrictions and may not access company listing chats properly.
+
+MsgCRM should not position the first Avito integration as a universal solution for every private Avito user.
+
+Initial target segment for official Avito messaging integration:
+
+- companies;
+- professional sellers;
+- stores;
+- agencies;
+- auto dealers;
+- sellers already using paid Avito subscription levels with Messenger API access.
+
+Product implication:
+
+- Add an Avito eligibility/check step before connection.
+- Explain to the user that Messenger API requires a supported Avito subscription level.
+- Keep non-API channels and future integrations in the roadmap for sellers who cannot use Avito Messenger API.
+- Do not attempt to bypass Avito API restrictions through unofficial scraping or browser automation.
+
+Reason:
+
+If a user does not have the required Avito subscription level or company authorization access, official message sync and replies through Avito Messenger API may be unavailable. The product remains viable for B2B/pro sellers, but the target segment must be narrowed and clearly explained.
+
+---
+
 ## 2026-05-21 — Database-backed integrations MVP
 
 Decision:
