@@ -17,3 +17,30 @@ Thumbs.db
 uploads/
 backups/
 tmp/
+
+# Local databases and data files
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+*.bak
+*.sql
+*.csv
+*.tsv
+*.xlsx
+*.xls
+
+# Local runtime data
+.local-data/
+data/
+storage/
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
