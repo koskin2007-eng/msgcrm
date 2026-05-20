@@ -111,3 +111,39 @@ Later, after phone verification is implemented, password recovery can additional
 Reason:
 
 Email/password is enough for the first working authentication flow. Phone should be added next because Avito workflows may require phone identity, contact confirmation, or seller account operations.
+
+---
+
+## 2026-05-20 — Personal data storage rule
+
+Decision:
+
+Registered users, companies, sessions, phones, emails, password hashes, Avito tokens, customer contacts, and other personal or sensitive data must be stored only in the application database or protected infrastructure.
+
+They must not be committed to GitHub.
+
+GitHub repository may contain only:
+
+- application code;
+- database schema;
+- migrations;
+- documentation;
+- mock data without real personal data;
+- `.env.example` files without real secrets.
+
+GitHub repository must not contain:
+
+- real user lists;
+- real emails;
+- real phone numbers;
+- real passwords;
+- password hashes from production;
+- session tokens;
+- Avito access/refresh tokens;
+- database dumps;
+- `.env` files with real credentials;
+- backups with personal data.
+
+Reason:
+
+User registration data is personal data. It must remain inside the database and protected runtime environment, not in the public source repository.
