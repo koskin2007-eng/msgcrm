@@ -80,3 +80,34 @@ Use **Integrations** instead of **Accounts** for connected external services.
 Reason:
 
 The word “Accounts” can confuse user accounts and connected Avito/Drom/VK accounts.
+
+---
+
+## 2026-05-20 — Authentication fields and password recovery
+
+Decision:
+
+MsgCRM now supports login by email and password. Future registration/profile fields should include:
+
+- phone number;
+- user name;
+- email;
+- password;
+- company name.
+
+Phone number is required for future Avito-related workflows and account/contact operations.
+
+Password recovery should be implemented through email first:
+
+1. User clicks “Forgot password?” on the login page.
+2. User enters email.
+3. System creates a one-time password reset token with expiration time.
+4. System sends a reset link to the user email.
+5. User opens the link and sets a new password.
+6. System invalidates the reset token and old active sessions if needed.
+
+Later, after phone verification is implemented, password recovery can additionally support phone/SMS code recovery.
+
+Reason:
+
+Email/password is enough for the first working authentication flow. Phone should be added next because Avito workflows may require phone identity, contact confirmation, or seller account operations.
