@@ -945,6 +945,20 @@ td {
   align-items: center;
 }
 
+.team-invite-link {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-invite-link span {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
 .team-message,
 .team-error {
   border-radius: 12px;
@@ -1054,6 +1068,32 @@ td {
   font-weight: 800;
 }
 
+.invite-summary {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.invite-summary div {
+  display: grid;
+  gap: 3px;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.invite-summary dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.invite-summary dd {
+  margin: 0;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 .empty-state {
   border: 1px dashed var(--line);
   border-radius: 16px;
@@ -1109,7 +1149,8 @@ td {
 
   .inbox-workspace,
   .delivery-layout,
-  .team-invite-form {
+  .team-invite-form,
+  .team-invite-link span {
     grid-template-columns: 1fr;
   }
 

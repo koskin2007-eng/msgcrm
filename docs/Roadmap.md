@@ -16,6 +16,7 @@ Pages:
 - `/templates`
 - `/integrations`
 - `/team`
+- `/accept-invite`
 - `/delivery`
 - `/profile`
 - `/settings`
@@ -84,6 +85,7 @@ Features:
 - roles;
 - database-backed team members;
 - MVP team invitations;
+- invitation acceptance and employee password setup;
 - workspace-specific data.
 
 ---

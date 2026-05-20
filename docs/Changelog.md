@@ -1,5 +1,30 @@
 # MsgCRM — Changelog
 
+## 2026-05-20 — Team invitation acceptance
+
+Added the first invitation acceptance flow for company teams:
+
+- added hashed invitation tokens and expiration fields to `User`;
+- added public invitation preview and accept endpoints;
+- added `/accept-invite` page where invited employees set their password;
+- updated `/team` invite form to show a one-time invitation link after creating an invitation;
+- kept invitation tokens and real employee data out of mock files, docs, and GitHub.
+
+Updated files:
+
+- apps/api/prisma/schema.prisma
+- apps/api/src/modules/team
+- apps/api/src/modules/auth/auth.module.ts
+- apps/web/src/app/accept-invite
+- apps/web/src/components/auth/AcceptInviteForm.tsx
+- apps/web/src/components/team/InviteTeamMemberForm.tsx
+- apps/web/src/lib/team-client.ts
+- docs/MsgCRM_Project_Prompt.md
+- docs/Decisions.md
+- docs/Roadmap.md
+
+---
+
 ## 2026-05-20 — Team API and workspace invitations
 
 Added the first database-backed team workflow:

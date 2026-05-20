@@ -138,12 +138,29 @@ Decision:
 - `/team` should read members from `GET /api/team/members`.
 - MVP invitations use `POST /api/team/invitations` and create an inactive user inside the same workspace.
 - Only `OWNER` and `ADMIN` roles can create invitations.
-- Invited users do not receive real email yet and cannot log in until a future invitation acceptance/password setup flow is added.
+- Invited users receive an invite link in the UI and activate their account through `/accept-invite`.
 - The MVP invite form allows `admin`, `manager`, and `viewer`, but not another `owner`.
 
 Reason:
 
 This gives the CRM a real company/team boundary without building a full permission system or email delivery before the product workflow is ready.
+
+---
+
+## 2026-05-20 — Invitation token security
+
+Decision:
+
+- Invitation links use random one-time tokens.
+- The database stores only `inviteTokenHash`, never the raw invite token.
+- Invitation links expire after 7 days.
+- Accepting an invitation sets the employee password, activates the user, clears the invite token hash, and records `acceptedAt`.
+- Public invitation endpoints return only the data needed to show the accept screen: employee name, email, role, company name, and expiration time.
+- Email delivery is still outside the MVP; the owner/admin manually copies the generated invitation link.
+
+Reason:
+
+Team onboarding needs to be usable before email sending is connected, but invite secrets must not be stored in source files, logs, docs, or the database in raw form.
 
 ---
 

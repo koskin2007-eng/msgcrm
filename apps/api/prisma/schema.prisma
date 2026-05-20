@@ -61,6 +61,10 @@ model User {
   role         UserRole @default(MANAGER)
   isActive     Boolean  @default(true)
   passwordHash String?
+  inviteTokenHash String? @unique
+  inviteExpiresAt DateTime?
+  invitedAt DateTime?
+  acceptedAt DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -69,6 +73,7 @@ model User {
   assignedConversations Conversation[] @relation("ConversationAssignee")
 
   @@index([companyId])
+  @@index([inviteExpiresAt])
 }
 
 model Session {

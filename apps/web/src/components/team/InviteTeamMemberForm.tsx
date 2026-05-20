@@ -1,5 +1,6 @@
 "use client";
 
+import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
@@ -20,6 +21,7 @@ export function InviteTeamMemberForm() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteTeamMemberPayload["role"]>("manager");
+  const [inviteUrl, setInviteUrl] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +30,7 @@ export function InviteTeamMemberForm() {
     event.preventDefault();
     setMessage(null);
     setError(null);
+    setInviteUrl("");
 
     if (!displayName.trim() || !email.trim()) {
       setError("Заполните имя и email сотрудника");
@@ -37,11 +40,13 @@ export function InviteTeamMemberForm() {
     setIsSubmitting(true);
 
     try {
-      await inviteTeamMemberRequest({
+      const response = await inviteTeamMemberRequest({
         displayName: displayName.trim(),
         email: email.trim(),
         role
       });
+      const origin = window.location.origin;
+      setInviteUrl(`${origin}${response.invitation.acceptPath}`);
       setDisplayName("");
       setEmail("");
       setRole("manager");
@@ -58,11 +63,20 @@ export function InviteTeamMemberForm() {
     }
   }
 
+  async function copyInviteUrl() {
+    if (!inviteUrl) {
+      return;
+    }
+
+    await navigator.clipboard.writeText(inviteUrl);
+    setMessage("Ссылка скопирована");
+  }
+
   return (
     <section className="team-invite-card">
       <div>
         <h2>Пригласить сотрудника</h2>
-        <p>Сотрудник появится в команде со статусом приглашения. Отправку email подключим отдельно.</p>
+        <p>Сотрудник задаст пароль по одноразовой ссылке и войдёт в эту компанию.</p>
       </div>
       <form className="team-invite-form" onSubmit={handleSubmit}>
         <label>
@@ -105,6 +119,18 @@ export function InviteTeamMemberForm() {
             {isSubmitting ? "Добавляем..." : "Пригласить сотрудника"}
           </Button>
         </div>
+        {inviteUrl ? (
+          <label className="team-invite-link span-2">
+            Ссылка приглашения
+            <span>
+              <Input readOnly value={inviteUrl} />
+              <Button onClick={copyInviteUrl} variant="secondary">
+                <Copy size={16} />
+                Копировать
+              </Button>
+            </span>
+          </label>
+        ) : null}
         {message ? <p className="team-message span-2">{message}</p> : null}
         {error ? <p className="team-error span-2">{error}</p> : null}
       </form>

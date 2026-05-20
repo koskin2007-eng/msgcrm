@@ -9,6 +9,6 @@ import { PasswordService } from "./password.service.js";
   imports: [PrismaModule],
   controllers: [AuthController],
   providers: [AuthService, AuthGuard, PasswordService],
-  exports: [AuthService, AuthGuard]
+  exports: [AuthService, AuthGuard, PasswordService]
 })
 export class AuthModule {}
