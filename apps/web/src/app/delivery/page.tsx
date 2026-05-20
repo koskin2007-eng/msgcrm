@@ -1,14 +1,25 @@
 import { Calculator } from "lucide-react";
+import { redirect } from "next/navigation";
 import { AppLayout } from "../../components/layout/AppLayout";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { deliveryOptions } from "../../lib/mock-data";
 import { AccountStatusBadge } from "../../components/ui/StatusBadge";
+import { fetchAuthSession } from "../../lib/auth-server";
+import { canCalculateDelivery } from "../../lib/permissions";
 
-export default function DeliveryPage() {
+export default async function DeliveryPage() {
+  const session = await fetchAuthSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const canCalculate = canCalculateDelivery(session.user.role);
+
   return (
-    <AppLayout>
+    <AppLayout session={session}>
       <section className="page-content">
         <PageHeader
           description="Будущие службы доставки и mock-расчёт стоимости для сделки."
@@ -18,33 +29,36 @@ export default function DeliveryPage() {
         <div className="delivery-layout">
           <section className="delivery-form-card">
             <h2>Расчёт доставки</h2>
+            {!canCalculate ? (
+              <p className="permission-note">Роль viewer может смотреть доставку без запуска расчёта.</p>
+            ) : null}
             <div className="form-grid">
               <label>
                 Город отправления
-                <Input defaultValue="Москва" />
+                <Input defaultValue="Москва" readOnly={!canCalculate} />
               </label>
               <label>
                 Город получения
-                <Input defaultValue="Санкт-Петербург" />
+                <Input defaultValue="Санкт-Петербург" readOnly={!canCalculate} />
               </label>
               <label>
                 ПВЗ клиента
-                <Input defaultValue="ПВЗ Озерки" />
+                <Input defaultValue="ПВЗ Озерки" readOnly={!canCalculate} />
               </label>
               <label>
                 Вес
-                <Input defaultValue="3,2 кг" />
+                <Input defaultValue="3,2 кг" readOnly={!canCalculate} />
               </label>
               <label>
                 Габариты
-                <Input defaultValue="40 × 30 × 25 см" />
+                <Input defaultValue="40 × 30 × 25 см" readOnly={!canCalculate} />
               </label>
               <label>
                 Служба доставки
-                <Input defaultValue="СДЭК" />
+                <Input defaultValue="СДЭК" readOnly={!canCalculate} />
               </label>
             </div>
-            <Button>
+            <Button disabled={!canCalculate}>
               <Calculator size={16} />
               Рассчитать доставку
             </Button>

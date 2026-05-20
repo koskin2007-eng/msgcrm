@@ -164,6 +164,24 @@ Team onboarding needs to be usable before email sending is connected, but invite
 
 ---
 
+## 2026-05-20 — MVP role permissions
+
+Decision:
+
+MsgCRM now uses a simple MVP permission matrix:
+
+- `owner` and `admin` can manage workspace-level areas: settings, integrations, and team invitations.
+- `manager` can work with sales operations: inbox replies, quick replies, deals, listings, and delivery calculation.
+- `viewer` can open workspace data in read-only mode but cannot send replies, create deals, edit templates, calculate delivery, manage integrations, or invite employees.
+- Every authenticated user can open and edit their own personal profile.
+- Backend role checks are added for outbound inbox messages and team invitations; UI controls are disabled or hidden to match those rules.
+
+Reason:
+
+The product needs real safety boundaries before external channels and customer data grow, but the first MVP should stay simple and avoid a complex permission system.
+
+---
+
 ## 2026-05-20 — Personal data storage rule
 
 Decision:

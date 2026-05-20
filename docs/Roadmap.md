@@ -83,6 +83,7 @@ Features:
 - password recovery by email reset link;
 - future password recovery by phone/SMS code after phone verification is implemented;
 - roles;
+- MVP role-based page and action permissions;
 - database-backed team members;
 - MVP team invitations;
 - invitation acceptance and employee password setup;

@@ -1,5 +1,37 @@
 # MsgCRM — Changelog
 
+## 2026-05-20 — MVP role permissions
+
+Added first real role-based restrictions:
+
+- added shared frontend permission helpers for `owner`, `admin`, `manager`, and `viewer`;
+- hid unavailable sidebar routes by role;
+- limited workspace settings to `owner` and `admin`;
+- made team invitations available only to `owner` and `admin`;
+- made `viewer` read-only for replies, deals, templates, integrations, and delivery actions;
+- added API role guard and blocked outbound inbox messages for `viewer`;
+- kept profile editing available to every authenticated user.
+
+Updated files:
+
+- apps/api/src/modules/auth
+- apps/api/src/modules/inbox/inbox.controller.ts
+- apps/api/src/modules/team/team.controller.ts
+- apps/web/src/lib/permissions.ts
+- apps/web/src/components/layout
+- apps/web/src/app/inbox
+- apps/web/src/app/deals
+- apps/web/src/app/templates
+- apps/web/src/app/integrations
+- apps/web/src/app/delivery
+- apps/web/src/app/team
+- apps/web/src/app/settings
+- docs/MsgCRM_Project_Prompt.md
+- docs/Decisions.md
+- docs/Roadmap.md
+
+---
+
 ## 2026-05-20 — Team invitation acceptance
 
 Added the first invitation acceptance flow for company teams:

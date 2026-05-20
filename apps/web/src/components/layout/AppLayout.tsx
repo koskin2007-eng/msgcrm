@@ -19,7 +19,7 @@ export async function AppLayout({ children, session: providedSession }: AppLayou
 
   return (
     <main className="app-shell">
-      <Sidebar />
+      <Sidebar role={session.user.role} />
       <section className="app-main">
         <TopBar session={session} />
         {children}

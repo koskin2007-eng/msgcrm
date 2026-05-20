@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { connectedAccounts } from "../../lib/mock-data";
 import { platformLabel } from "../../lib/format";
+import { canAccessRoute } from "../../lib/permissions";
+import type { AuthRole } from "../../lib/auth-types";
 import type { Platform } from "../../lib/types";
 
 const menuItems = [
@@ -31,8 +33,13 @@ const menuItems = [
 
 const channelOrder: Platform[] = ["avito", "drom", "youla", "vk", "telegram"];
 
-export function Sidebar() {
+interface SidebarProps {
+  role: AuthRole;
+}
+
+export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
+  const visibleMenuItems = menuItems.filter((item) => canAccessRoute(role, item.href));
 
   return (
     <aside className="app-sidebar">
@@ -45,7 +52,7 @@ export function Sidebar() {
       </Link>
 
       <nav className="main-menu" aria-label="Главное меню">
-        {menuItems.map((item) => {
+        {visibleMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
 

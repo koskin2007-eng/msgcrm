@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import { AppLayout } from "../../components/layout/AppLayout";
 import { LogoutButton } from "../../components/layout/LogoutButton";
+import { EmptyState } from "../../components/ui/EmptyState";
 import { Button } from "../../components/ui/Button";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { fetchAuthSession } from "../../lib/auth-server";
 import { roleLabel } from "../../lib/format";
+import { canManageSettings } from "../../lib/permissions";
 
 const settingsSections = [
   "Компания",
@@ -22,6 +24,8 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
+  const canManage = canManageSettings(session.user.role);
+
   return (
     <AppLayout session={session}>
       <section className="page-content">
@@ -30,33 +34,44 @@ export default async function SettingsPage() {
           title="Настройки"
         />
 
-        <section className="settings-summary">
-          <div>
-            <span>Название компании</span>
-            <strong>{session.company.name}</strong>
-          </div>
-          <div>
-            <span>Текущий пользователь</span>
-            <strong>{session.user.displayName}</strong>
-          </div>
-          <div>
-            <span>Роль</span>
-            <strong>{roleLabel(session.user.role)}</strong>
-          </div>
-          <LogoutButton />
-        </section>
+        {!canManage ? (
+          <EmptyState
+            description="Настройки workspace доступны только ролям owner и admin. Личные данные можно изменить в отдельном разделе профиля."
+            title="Недостаточно прав"
+          />
+        ) : null}
 
-        <div className="settings-grid">
-          {settingsSections.map((section) => (
-            <section className="settings-card" key={section}>
-              <h3>{section}</h3>
-              <p>
-                Раздел подготовлен под будущую backend-логику и права workspace.
-              </p>
-              <Button variant="ghost">Открыть</Button>
+        {canManage ? (
+          <>
+            <section className="settings-summary">
+              <div>
+                <span>Название компании</span>
+                <strong>{session.company.name}</strong>
+              </div>
+              <div>
+                <span>Текущий пользователь</span>
+                <strong>{session.user.displayName}</strong>
+              </div>
+              <div>
+                <span>Роль</span>
+                <strong>{roleLabel(session.user.role)}</strong>
+              </div>
+              <LogoutButton />
             </section>
-          ))}
-        </div>
+
+            <div className="settings-grid">
+              {settingsSections.map((section) => (
+                <section className="settings-card" key={section}>
+                  <h3>{section}</h3>
+                  <p>
+                    Раздел подготовлен под будущую backend-логику и права workspace.
+                  </p>
+                  <Button variant="ghost">Открыть</Button>
+                </section>
+              ))}
+            </div>
+          </>
+        ) : null}
       </section>
     </AppLayout>
   );

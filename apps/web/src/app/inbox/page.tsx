@@ -3,6 +3,11 @@ import { AppLayout } from "../../components/layout/AppLayout";
 import { InboxWorkspace } from "../../components/inbox/InboxWorkspace";
 import { fetchAuthSession } from "../../lib/auth-server";
 import { fetchInboxBootstrap } from "../../lib/inbox-server";
+import {
+  canCalculateDelivery,
+  canCreateDeals,
+  canReplyToConversations
+} from "../../lib/permissions";
 
 export default async function InboxPage() {
   const session = await fetchAuthSession();
@@ -18,6 +23,9 @@ export default async function InboxPage() {
       <InboxWorkspace
         accounts={inbox.accounts}
         backendConversationIds={inbox.backendConversationIds}
+        canCalculateDelivery={canCalculateDelivery(session.user.role)}
+        canCreateDeal={canCreateDeals(session.user.role)}
+        canReply={canReplyToConversations(session.user.role)}
         conversations={inbox.conversations}
         listings={inbox.listings}
         messages={inbox.messages}

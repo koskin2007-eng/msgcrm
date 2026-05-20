@@ -12,6 +12,9 @@ interface ChatWindowProps {
   conversation: Conversation;
   messages: Message[];
   account?: ConnectedAccount;
+  canCalculateDelivery?: boolean;
+  canCreateDeal?: boolean;
+  canReply?: boolean;
   isSending?: boolean;
   listing?: Listing;
   replyText: string;
@@ -25,6 +28,9 @@ export function ChatWindow({
   conversation,
   messages,
   account: accountOverride,
+  canCalculateDelivery = true,
+  canCreateDeal = true,
+  canReply = true,
   isSending = false,
   listing: listingOverride,
   replyText,
@@ -66,6 +72,9 @@ export function ChatWindow({
         </div>
 
         <ReplyBox
+          canCalculateDelivery={canCalculateDelivery}
+          canCreateDeal={canCreateDeal}
+          canReply={canReply}
           isSending={isSending}
           onChange={onReplyTextChange}
           onCreateDeal={onCreateDeal}
@@ -78,7 +87,7 @@ export function ChatWindow({
       <aside className="right-info-panel">
         <ListingCard listing={listing} />
         <CustomerCard conversation={conversation} />
-        <DeliveryCard />
+        <DeliveryCard canCalculateDelivery={canCalculateDelivery} />
       </aside>
     </section>
   );

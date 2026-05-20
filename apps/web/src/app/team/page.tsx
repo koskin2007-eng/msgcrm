@@ -4,6 +4,7 @@ import { InviteTeamMemberForm } from "../../components/team/InviteTeamMemberForm
 import { TeamTable } from "../../components/team/TeamTable";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { fetchAuthSession } from "../../lib/auth-server";
+import { canManageTeam } from "../../lib/permissions";
 import { fetchTeamMembers } from "../../lib/team-server";
 
 export default async function TeamPage() {
@@ -14,6 +15,7 @@ export default async function TeamPage() {
   }
 
   const members = (await fetchTeamMembers()) ?? [];
+  const canInvite = canManageTeam(session.user.role);
 
   return (
     <AppLayout session={session}>
@@ -23,7 +25,14 @@ export default async function TeamPage() {
           title="Команда"
         />
         <div className="team-layout">
-          <InviteTeamMemberForm />
+          {canInvite ? (
+            <InviteTeamMemberForm />
+          ) : (
+            <section className="team-invite-card">
+              <h2>Приглашения ограничены</h2>
+              <p>Приглашать сотрудников и выдавать роли могут только owner и admin.</p>
+            </section>
+          )}
           <TeamTable members={members} />
         </div>
       </section>

@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
+import { Roles } from "../auth/decorators/roles.decorator.js";
 import { AuthGuard } from "../auth/guards/auth.guard.js";
+import { RoleGuard } from "../auth/guards/role.guard.js";
 import type { AuthenticatedUser } from "../auth/auth.types.js";
 import { CreateMessageDto } from "./dto/create-message.dto.js";
 import { InboxService } from "./inbox.service.js";
@@ -21,6 +23,8 @@ export class InboxController {
   }
 
   @Post("conversations/:id/messages")
+  @Roles("OWNER", "ADMIN", "MANAGER")
+  @UseGuards(RoleGuard)
   createMessage(
     @Param("id") id: string,
     @Body() body: CreateMessageDto,

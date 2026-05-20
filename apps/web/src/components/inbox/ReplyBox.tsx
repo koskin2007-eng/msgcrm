@@ -5,6 +5,9 @@ import { Textarea } from "../ui/Input";
 
 interface ReplyBoxProps {
   value: string;
+  canCalculateDelivery?: boolean;
+  canCreateDeal?: boolean;
+  canReply?: boolean;
   isSending?: boolean;
   sendError?: string | null;
   onChange: (value: string) => void;
@@ -14,6 +17,9 @@ interface ReplyBoxProps {
 
 export function ReplyBox({
   value,
+  canCalculateDelivery = true,
+  canCreateDeal = true,
+  canReply = true,
   isSending = false,
   sendError,
   onChange,
@@ -24,7 +30,12 @@ export function ReplyBox({
     <section className="reply-panel">
       <div className="quick-replies">
         {quickReplyTemplates.slice(0, 5).map((template) => (
-          <button key={template.id} onClick={() => onChange(template.text)} type="button">
+          <button
+            disabled={!canReply}
+            key={template.id}
+            onClick={() => onChange(template.text)}
+            type="button"
+          >
             {template.title}
           </button>
         ))}
@@ -33,26 +44,38 @@ export function ReplyBox({
       <Textarea
         aria-label="Ответ клиенту"
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Напишите ответ клиенту..."
+        placeholder={
+          canReply
+            ? "Напишите ответ клиенту..."
+            : "Ваша роль позволяет только просматривать переписку"
+        }
+        readOnly={!canReply}
         value={value}
       />
 
+      {!canReply ? (
+        <p className="permission-note">Роль viewer открывает переписку только для просмотра.</p>
+      ) : null}
       {sendError ? <p className="reply-error">{sendError}</p> : null}
 
       <div className="reply-actions">
-        <Button disabled={isSending} onClick={onSend}>
+        <Button disabled={isSending || !canReply} onClick={onSend}>
           <Send size={16} />
           {isSending ? "Отправляем..." : "Отправить"}
         </Button>
-        <Button onClick={() => onChange(quickReplyTemplates[0]?.text ?? "")} variant="secondary">
+        <Button
+          disabled={!canReply}
+          onClick={() => onChange(quickReplyTemplates[0]?.text ?? "")}
+          variant="secondary"
+        >
           <WandSparkles size={16} />
           Быстрый ответ
         </Button>
-        <Button variant="secondary">
+        <Button disabled={!canCalculateDelivery} variant="secondary">
           <Truck size={16} />
           Рассчитать доставку
         </Button>
-        <Button onClick={onCreateDeal} variant="secondary">
+        <Button disabled={!canCreateDeal} onClick={onCreateDeal} variant="secondary">
           Создать сделку
         </Button>
       </div>

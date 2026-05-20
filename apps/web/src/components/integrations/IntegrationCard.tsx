@@ -4,9 +4,15 @@ import type { ConnectedAccount } from "../../lib/types";
 import { Button } from "../ui/Button";
 import { AccountStatusBadge } from "../ui/StatusBadge";
 
-export function IntegrationCard({ account }: { account: ConnectedAccount }) {
-  const canConnect = account.status === "disconnected";
-  const canDisconnect = account.status === "connected" || account.status === "auth_error";
+interface IntegrationCardProps {
+  account: ConnectedAccount;
+  canManage?: boolean;
+}
+
+export function IntegrationCard({ account, canManage = true }: IntegrationCardProps) {
+  const canConnect = canManage && account.status === "disconnected";
+  const canDisconnect =
+    canManage && (account.status === "connected" || account.status === "auth_error");
 
   return (
     <section className="integration-card">
@@ -31,7 +37,11 @@ export function IntegrationCard({ account }: { account: ConnectedAccount }) {
           <Unplug size={16} />
           Отключить
         </Button>
-        <Button variant="ghost" title={accountStatusLabel(account.status)}>
+        <Button
+          disabled={!canManage}
+          variant="ghost"
+          title={accountStatusLabel(account.status)}
+        >
           <Settings size={16} />
           Настроить
         </Button>

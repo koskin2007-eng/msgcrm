@@ -16,6 +16,9 @@ import { ConversationList, type InboxFilter } from "./ConversationList";
 interface InboxWorkspaceProps {
   accounts?: ConnectedAccount[];
   backendConversationIds?: string[];
+  canCalculateDelivery?: boolean;
+  canCreateDeal?: boolean;
+  canReply?: boolean;
   conversations?: Conversation[];
   listings?: Listing[];
   messages?: Message[];
@@ -58,6 +61,9 @@ function mapById<T extends { id: string }>(items: T[]) {
 export function InboxWorkspace({
   accounts = mockConnectedAccounts,
   backendConversationIds = [],
+  canCalculateDelivery = true,
+  canCreateDeal = true,
+  canReply = true,
   conversations: initialConversations = mockConversations,
   listings = mockListings,
   messages: initialMessages = mockMessages
@@ -94,7 +100,7 @@ export function InboxWorkspace({
   async function handleSend() {
     const text = replyText.trim();
 
-    if (!selectedConversation || !text || isSending) {
+    if (!canReply || !selectedConversation || !text || isSending) {
       return;
     }
 
@@ -137,7 +143,7 @@ export function InboxWorkspace({
   }
 
   function handleCreateDeal() {
-    if (!selectedConversation) {
+    if (!canCreateDeal || !selectedConversation) {
       return;
     }
 
@@ -165,6 +171,9 @@ export function InboxWorkspace({
       {selectedConversation ? (
         <ChatWindow
           account={accountsById.get(selectedConversation.connectedAccountId)}
+          canCalculateDelivery={canCalculateDelivery}
+          canCreateDeal={canCreateDeal}
+          canReply={canReply}
           conversation={selectedConversation}
           isSending={isSending}
           listing={listingsById.get(selectedConversation.listingId)}

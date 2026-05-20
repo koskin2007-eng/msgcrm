@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import type { AuthenticatedUser } from "../auth/auth.types.js";
 import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
+import { Roles } from "../auth/decorators/roles.decorator.js";
 import { AuthGuard } from "../auth/guards/auth.guard.js";
+import { RoleGuard } from "../auth/guards/role.guard.js";
 import { AcceptInviteDto } from "./dto/accept-invite.dto.js";
 import { InviteMemberDto } from "./dto/invite-member.dto.js";
 import { TeamService } from "./team.service.js";
@@ -17,7 +19,8 @@ export class TeamController {
   }
 
   @Post("invitations")
-  @UseGuards(AuthGuard)
+  @Roles("OWNER", "ADMIN")
+  @UseGuards(AuthGuard, RoleGuard)
   inviteMember(
     @CurrentUser() user: AuthenticatedUser,
     @Body() body: InviteMemberDto

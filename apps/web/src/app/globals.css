@@ -647,6 +647,22 @@ td {
   font-weight: 700;
 }
 
+.permission-note {
+  border: 1px solid rgb(37 99 235 / 16%);
+  border-radius: 12px;
+  background: rgb(37 99 235 / 7%);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.permission-note.compact {
+  font-size: 12px;
+  padding: 8px 10px;
+}
+
 .quick-replies {
   display: flex;
   gap: 8px;
