@@ -1,4 +1,5 @@
-import type { Conversation } from "../../lib/types";
+import type { ConnectedAccount, Conversation, Listing } from "../../lib/types";
+import { EmptyState } from "../ui/EmptyState";
 import { ConversationItem } from "./ConversationItem";
 
 export type InboxFilter = "all" | "new" | "unanswered" | "delivery" | "deals";
@@ -15,6 +16,8 @@ interface ConversationListProps {
   conversations: Conversation[];
   selectedId: string;
   filter: InboxFilter;
+  accountsById?: Map<string, ConnectedAccount>;
+  listingsById?: Map<string, Listing>;
   onFilterChange: (filter: InboxFilter) => void;
   onSelect: (conversationId: string) => void;
 }
@@ -23,6 +26,8 @@ export function ConversationList({
   conversations,
   selectedId,
   filter,
+  accountsById,
+  listingsById,
   onFilterChange,
   onSelect
 }: ConversationListProps) {
@@ -49,14 +54,25 @@ export function ConversationList({
       </div>
 
       <div className="conversation-scroll">
-        {conversations.map((conversation) => (
-          <ConversationItem
-            conversation={conversation}
-            isActive={conversation.id === selectedId}
-            key={conversation.id}
-            onSelect={() => onSelect(conversation.id)}
-          />
-        ))}
+        {conversations.length ? (
+          conversations.map((conversation) => (
+            <ConversationItem
+              account={accountsById?.get(conversation.connectedAccountId)}
+              conversation={conversation}
+              isActive={conversation.id === selectedId}
+              key={conversation.id}
+              listing={listingsById?.get(conversation.listingId)}
+              onSelect={() => onSelect(conversation.id)}
+            />
+          ))
+        ) : (
+          <div className="conversation-empty">
+            <EmptyState
+              description="После подключения канала здесь появятся обращения клиентов."
+              title="Диалогов пока нет"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

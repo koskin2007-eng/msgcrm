@@ -2,15 +2,30 @@
 
 import { useMemo, useState } from "react";
 import {
-  conversations as initialConversations,
-  getMessages,
-  messages as initialMessages
+  connectedAccounts as mockConnectedAccounts,
+  conversations as mockConversations,
+  listings as mockListings,
+  messages as mockMessages
 } from "../../lib/mock-data";
-import type { Conversation, Message } from "../../lib/types";
+import { sendInboxMessage } from "../../lib/inbox-client";
+import type { ConnectedAccount, Conversation, Listing, Message } from "../../lib/types";
+import { EmptyState } from "../ui/EmptyState";
 import { ChatWindow } from "./ChatWindow";
 import { ConversationList, type InboxFilter } from "./ConversationList";
 
-function filterConversations(conversations: Conversation[], messages: Message[], filter: InboxFilter) {
+interface InboxWorkspaceProps {
+  accounts?: ConnectedAccount[];
+  backendConversationIds?: string[];
+  conversations?: Conversation[];
+  listings?: Listing[];
+  messages?: Message[];
+}
+
+function filterConversations(
+  conversations: Conversation[],
+  messages: Message[],
+  filter: InboxFilter
+) {
   if (filter === "new") {
     return conversations.filter((conversation) => conversation.status === "new");
   }
@@ -36,12 +51,31 @@ function filterConversations(conversations: Conversation[], messages: Message[],
   return conversations;
 }
 
-export function InboxWorkspace() {
+function mapById<T extends { id: string }>(items: T[]) {
+  return new Map(items.map((item) => [item.id, item]));
+}
+
+export function InboxWorkspace({
+  accounts = mockConnectedAccounts,
+  backendConversationIds = [],
+  conversations: initialConversations = mockConversations,
+  listings = mockListings,
+  messages: initialMessages = mockMessages
+}: InboxWorkspaceProps) {
   const [conversations, setConversations] = useState(initialConversations);
   const [messages, setMessages] = useState(initialMessages);
   const [selectedId, setSelectedId] = useState(initialConversations[0]?.id ?? "");
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [replyText, setReplyText] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
+
+  const accountsById = useMemo(() => mapById(accounts), [accounts]);
+  const backendIds = useMemo(
+    () => new Set(backendConversationIds),
+    [backendConversationIds]
+  );
+  const listingsById = useMemo(() => mapById(listings), [listings]);
 
   const visibleConversations = useMemo(
     () => filterConversations(conversations, messages, filter),
@@ -57,37 +91,49 @@ export function InboxWorkspace() {
     ? messages.filter((message) => message.conversationId === selectedConversation.id)
     : [];
 
-  function handleSend() {
+  async function handleSend() {
     const text = replyText.trim();
 
-    if (!selectedConversation || !text) {
+    if (!selectedConversation || !text || isSending) {
       return;
     }
 
-    const now = new Date().toISOString();
-    const nextMessage: Message = {
-      id: `message_mock_${Date.now()}`,
-      conversationId: selectedConversation.id,
-      sender: "manager",
-      text,
-      createdAt: now
-    };
+    setSendError(null);
+    setIsSending(true);
 
-    setMessages((current) => [...current, nextMessage]);
-    setConversations((current) =>
-      current.map((conversation) =>
-        conversation.id === selectedConversation.id
-          ? {
-              ...conversation,
-              lastMessage: text,
-              status: "waiting_customer",
-              updatedAt: now,
-              unreadCount: 0
-            }
-          : conversation
-      )
-    );
-    setReplyText("");
+    try {
+      const nextMessage = backendIds.has(selectedConversation.id)
+        ? await sendInboxMessage(selectedConversation.id, text)
+        : {
+            id: `message_mock_${Date.now()}`,
+            conversationId: selectedConversation.id,
+            sender: "manager" as const,
+            text,
+            createdAt: new Date().toISOString()
+          };
+
+      setMessages((current) => [...current, nextMessage]);
+      setConversations((current) =>
+        current.map((conversation) =>
+          conversation.id === selectedConversation.id
+            ? {
+                ...conversation,
+                lastMessage: text,
+                status: "waiting_customer",
+                updatedAt: nextMessage.createdAt,
+                unreadCount: 0
+              }
+            : conversation
+        )
+      );
+      setReplyText("");
+    } catch (error) {
+      setSendError(
+        error instanceof Error ? error.message : "Не удалось отправить сообщение"
+      );
+    } finally {
+      setIsSending(false);
+    }
   }
 
   function handleCreateDeal() {
@@ -107,8 +153,10 @@ export function InboxWorkspace() {
   return (
     <div className="inbox-workspace">
       <ConversationList
+        accountsById={accountsById}
         conversations={visibleConversations}
         filter={filter}
+        listingsById={listingsById}
         onFilterChange={setFilter}
         onSelect={setSelectedId}
         selectedId={selectedConversation?.id ?? ""}
@@ -116,14 +164,25 @@ export function InboxWorkspace() {
 
       {selectedConversation ? (
         <ChatWindow
+          account={accountsById.get(selectedConversation.connectedAccountId)}
           conversation={selectedConversation}
-          messages={selectedMessages.length ? selectedMessages : getMessages(selectedConversation.id)}
+          isSending={isSending}
+          listing={listingsById.get(selectedConversation.listingId)}
+          messages={selectedMessages}
           onCreateDeal={handleCreateDeal}
           onReplyTextChange={setReplyText}
           onSend={handleSend}
           replyText={replyText}
+          sendError={sendError}
         />
-      ) : null}
+      ) : (
+        <section className="chat-empty-state">
+          <EmptyState
+            description="Подключите Авито или Telegram, чтобы получать обращения в этом рабочем пространстве."
+            title="Выберите диалог"
+          />
+        </section>
+      )}
     </div>
   );
 }

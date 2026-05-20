@@ -14,7 +14,7 @@ function getInternalApiUrl() {
   );
 }
 
-async function getCookieHeader() {
+export async function getServerCookieHeader() {
   const cookieStore = await cookies();
 
   return cookieStore
@@ -24,7 +24,7 @@ async function getCookieHeader() {
 }
 
 export async function fetchAuthSession(): Promise<AuthSession | null> {
-  const cookieHeader = await getCookieHeader();
+  const cookieHeader = await getServerCookieHeader();
 
   if (!cookieHeader) {
     return null;

@@ -23,7 +23,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <AppLayout>
+    <AppLayout session={session}>
       <section className="page-content">
         <PageHeader
           description="Настройки компании, профиля и будущих прав доступа."

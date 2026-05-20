@@ -5,12 +5,21 @@ import { Textarea } from "../ui/Input";
 
 interface ReplyBoxProps {
   value: string;
+  isSending?: boolean;
+  sendError?: string | null;
   onChange: (value: string) => void;
-  onSend: () => void;
+  onSend: () => void | Promise<void>;
   onCreateDeal: () => void;
 }
 
-export function ReplyBox({ value, onChange, onSend, onCreateDeal }: ReplyBoxProps) {
+export function ReplyBox({
+  value,
+  isSending = false,
+  sendError,
+  onChange,
+  onSend,
+  onCreateDeal
+}: ReplyBoxProps) {
   return (
     <section className="reply-panel">
       <div className="quick-replies">
@@ -28,10 +37,12 @@ export function ReplyBox({ value, onChange, onSend, onCreateDeal }: ReplyBoxProp
         value={value}
       />
 
+      {sendError ? <p className="reply-error">{sendError}</p> : null}
+
       <div className="reply-actions">
-        <Button onClick={onSend}>
+        <Button disabled={isSending} onClick={onSend}>
           <Send size={16} />
-          Отправить
+          {isSending ? "Отправляем..." : "Отправить"}
         </Button>
         <Button onClick={() => onChange(quickReplyTemplates[0]?.text ?? "")} variant="secondary">
           <WandSparkles size={16} />

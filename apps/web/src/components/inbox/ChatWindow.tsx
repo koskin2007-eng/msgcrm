@@ -1,6 +1,6 @@
 import { getConnectedAccount, getListing } from "../../lib/mock-data";
 import { formatCurrency, platformLabel } from "../../lib/format";
-import type { Conversation, Message } from "../../lib/types";
+import type { ConnectedAccount, Conversation, Listing, Message } from "../../lib/types";
 import { ConversationStatusBadge } from "../ui/StatusBadge";
 import { CustomerCard } from "./CustomerCard";
 import { DeliveryCard } from "./DeliveryCard";
@@ -11,22 +11,30 @@ import { ReplyBox } from "./ReplyBox";
 interface ChatWindowProps {
   conversation: Conversation;
   messages: Message[];
+  account?: ConnectedAccount;
+  isSending?: boolean;
+  listing?: Listing;
   replyText: string;
+  sendError?: string | null;
   onReplyTextChange: (value: string) => void;
-  onSend: () => void;
+  onSend: () => void | Promise<void>;
   onCreateDeal: () => void;
 }
 
 export function ChatWindow({
   conversation,
   messages,
+  account: accountOverride,
+  isSending = false,
+  listing: listingOverride,
   replyText,
+  sendError,
   onReplyTextChange,
   onSend,
   onCreateDeal
 }: ChatWindowProps) {
-  const listing = getListing(conversation.listingId);
-  const account = getConnectedAccount(conversation.connectedAccountId);
+  const listing = listingOverride ?? getListing(conversation.listingId);
+  const account = accountOverride ?? getConnectedAccount(conversation.connectedAccountId);
 
   if (!listing) {
     return null;
@@ -44,7 +52,9 @@ export function ChatWindow({
               <ConversationStatusBadge status={conversation.status} />
             </div>
             <p>
-              Объявление: {listing.title} · Цена: {formatCurrency(listing.price)} · Аккаунт: {account?.title}
+              Объявление: {listing.title} · Цена:{" "}
+              {listing.price ? formatCurrency(listing.price) : "не указана"} ·
+              Аккаунт: {account?.title ?? "не указан"}
             </p>
           </div>
         </header>
@@ -56,9 +66,11 @@ export function ChatWindow({
         </div>
 
         <ReplyBox
+          isSending={isSending}
           onChange={onReplyTextChange}
           onCreateDeal={onCreateDeal}
           onSend={onSend}
+          sendError={sendError}
           value={replyText}
         />
       </section>
