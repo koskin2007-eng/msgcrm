@@ -4,6 +4,24 @@ This file stores key project decisions.
 
 ---
 
+## 2026-05-21 — Database-backed integrations MVP
+
+Decision:
+
+- `/integrations` should read connected external accounts from backend `ChannelAccount` rows for the current company/workspace.
+- `GET /api/integrations/accounts` returns only accounts owned by the authenticated user's company.
+- `POST /api/integrations/accounts` creates MVP local placeholders for Avito and Telegram accounts without real OAuth.
+- `PATCH /api/integrations/accounts/:id` enables or disables a workspace account.
+- Only `OWNER` and `ADMIN` can create or update integration accounts.
+- Drom, Yula, VK, and other future channels remain visible as `coming_soon` placeholders until their real models/API flows are added.
+- Real Avito/Telegram access tokens must not be created, mocked with real values, logged, or committed during this MVP step.
+
+Reason:
+
+The CRM needs workspace-owned integration records before real OAuth and message sync are connected. A database-backed placeholder flow lets us validate permissions, workspace isolation, and UI behavior without handling production platform credentials yet.
+
+---
+
 ## 2026-05-20 — Project name and domain
 
 Decision:

@@ -1,5 +1,30 @@
 # MsgCRM — Changelog
 
+## 2026-05-21 — Database-backed integrations MVP
+
+Added the first backend-backed integrations workflow:
+
+- added `GET /api/integrations/accounts` for workspace channel accounts;
+- added `POST /api/integrations/accounts` for MVP local Avito/Telegram connection placeholders;
+- added `PATCH /api/integrations/accounts/:id` for enabling/disabling an account inside the current workspace;
+- connected `/integrations` to backend data with mock fallback;
+- kept future channels as disabled planned placeholders;
+- kept real OAuth, external tokens, and platform API calls out of the MVP.
+
+Updated files:
+
+- apps/api/src/modules/integrations
+- apps/api/src/modules/app.module.ts
+- apps/web/src/app/integrations/page.tsx
+- apps/web/src/components/integrations
+- apps/web/src/lib/integrations-server.ts
+- apps/web/src/lib/integrations-client.ts
+- docs/MsgCRM_Project_Prompt.md
+- docs/Decisions.md
+- docs/Roadmap.md
+
+---
+
 ## 2026-05-20 — MVP role permissions
 
 Added first real role-based restrictions:

@@ -68,6 +68,7 @@ export interface ConnectedAccount {
   status: ConnectedAccountStatus;
   unreadCount: number;
   description: string;
+  isPlaceholder?: boolean;
 }
 
 export interface Listing {

@@ -60,6 +60,14 @@ Entities:
 - QuickReplyTemplate;
 - DeliveryOption.
 
+Current backend-backed MVP pieces:
+
+- authentication/session;
+- team members and invitations;
+- role-based permissions;
+- integration accounts via `ChannelAccount`;
+- inbox conversations/messages skeleton.
+
 Expected result:
 
 Frontend mock data can be replaced with API data later.
@@ -87,6 +95,7 @@ Features:
 - database-backed team members;
 - MVP team invitations;
 - invitation acceptance and employee password setup;
+- database-backed integrations page for workspace channel accounts;
 - workspace-specific data.
 
 ---
