@@ -1,5 +1,37 @@
 # MsgCRM — Changelog
 
+## 2026-05-21 — Strategic pivot to Telegram AI Agents
+
+Reoriented the current MsgCRM project without rewriting the existing foundation:
+
+- paused Avito-first work as a future B2B integration direction;
+- selected Telegram AI Agents as the next MVP direction;
+- preserved existing MsgCRM auth, workspace, roles, team, profile, integrations, inbox, and knowledge-base structure;
+- added server bridge architecture documentation for Telegram webhook → backend → OpenAI → suggested reply;
+- added Prisma preparation for agents, Telegram bot integrations, encrypted bot tokens, and suggested replies;
+- added MVP API endpoints for agents, knowledge documents, Telegram bot connection/check, and Telegram webhooks;
+- added frontend pages for `/agents`, `/agents/new`, `/agents/[id]`, `/knowledge`, and `/integrations/telegram`;
+- added AI suggested reply UI to `/inbox`;
+- added safe placeholder environment variables for OpenAI, Telegram webhook base URL, and encryption key.
+
+Updated files:
+
+- README.md
+- .env.example
+- infra/env.production.example
+- apps/api/prisma/schema.prisma
+- apps/api/src/modules
+- apps/web/src/app
+- apps/web/src/components
+- apps/web/src/lib
+- packages/shared/src/index.ts
+- docs/Server_Context.md
+- docs/MsgCRM_Project_Prompt.md
+- docs/Decisions.md
+- docs/Roadmap.md
+
+---
+
 ## 2026-05-21 — Database-backed integrations MVP
 
 Added the first backend-backed integrations workflow:

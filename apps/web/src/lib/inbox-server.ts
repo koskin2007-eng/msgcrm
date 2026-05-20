@@ -5,7 +5,8 @@ import type {
   ConversationStatus,
   Listing,
   Message,
-  Platform
+  Platform,
+  SuggestedReply
 } from "./types";
 import { getServerCookieHeader } from "./auth-server";
 
@@ -36,6 +37,7 @@ interface ApiConversationSummary {
     text: string;
     sentAt: string;
   } | null;
+  suggestedReply: ApiSuggestedReply | null;
   lastMessageAt: string | null;
   unreadCount: number;
 }
@@ -53,6 +55,18 @@ interface ApiConversationDetail {
     text: string;
     sentAt: string;
   }>;
+  suggestedReply: ApiSuggestedReply | null;
+}
+
+interface ApiSuggestedReply {
+  id: string;
+  companyId: string;
+  conversationId?: string;
+  messageId: string | null;
+  agentId: string | null;
+  text: string;
+  status: "DRAFT" | "APPROVED" | "REJECTED" | "SENT";
+  createdAt: string;
 }
 
 export interface InboxBootstrapData {
@@ -61,6 +75,7 @@ export interface InboxBootstrapData {
   conversations: Conversation[];
   listings: Listing[];
   messages: Message[];
+  suggestedReplies: SuggestedReply[];
 }
 
 function stripTrailingSlash(value: string) {
@@ -190,6 +205,26 @@ function buildMessages(detail: ApiConversationDetail | null): Message[] {
   );
 }
 
+function buildSuggestedReply(
+  conversationId: string,
+  reply: ApiSuggestedReply | null
+): SuggestedReply | null {
+  if (!reply) {
+    return null;
+  }
+
+  return {
+    id: reply.id,
+    companyId: reply.companyId,
+    conversationId: reply.conversationId ?? conversationId,
+    messageId: reply.messageId,
+    agentId: reply.agentId,
+    text: reply.text,
+    status: reply.status,
+    createdAt: reply.createdAt
+  };
+}
+
 export async function fetchInboxBootstrap(
   companyId: string
 ): Promise<InboxBootstrapData> {
@@ -219,6 +254,14 @@ export async function fetchInboxBootstrap(
       buildConversation(companyId, summary, details[index] ?? null)
     ),
     listings: Array.from(listingMap.values()),
-    messages: details.flatMap((detail) => buildMessages(detail))
+    messages: details.flatMap((detail) => buildMessages(detail)),
+    suggestedReplies: summaries
+      .map((summary, index) =>
+        buildSuggestedReply(
+          summary.id,
+          details[index]?.suggestedReply ?? summary.suggestedReply
+        )
+      )
+      .filter((reply): reply is SuggestedReply => Boolean(reply))
   };
 }

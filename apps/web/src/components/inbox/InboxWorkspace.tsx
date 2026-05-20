@@ -5,10 +5,17 @@ import {
   connectedAccounts as mockConnectedAccounts,
   conversations as mockConversations,
   listings as mockListings,
-  messages as mockMessages
+  messages as mockMessages,
+  suggestedReplies as mockSuggestedReplies
 } from "../../lib/mock-data";
 import { sendInboxMessage } from "../../lib/inbox-client";
-import type { ConnectedAccount, Conversation, Listing, Message } from "../../lib/types";
+import type {
+  ConnectedAccount,
+  Conversation,
+  Listing,
+  Message,
+  SuggestedReply
+} from "../../lib/types";
 import { EmptyState } from "../ui/EmptyState";
 import { ChatWindow } from "./ChatWindow";
 import { ConversationList, type InboxFilter } from "./ConversationList";
@@ -22,6 +29,7 @@ interface InboxWorkspaceProps {
   conversations?: Conversation[];
   listings?: Listing[];
   messages?: Message[];
+  suggestedReplies?: SuggestedReply[];
 }
 
 function filterConversations(
@@ -66,7 +74,8 @@ export function InboxWorkspace({
   canReply = true,
   conversations: initialConversations = mockConversations,
   listings = mockListings,
-  messages: initialMessages = mockMessages
+  messages: initialMessages = mockMessages,
+  suggestedReplies = mockSuggestedReplies
 }: InboxWorkspaceProps) {
   const [conversations, setConversations] = useState(initialConversations);
   const [messages, setMessages] = useState(initialMessages);
@@ -96,6 +105,12 @@ export function InboxWorkspace({
   const selectedMessages = selectedConversation
     ? messages.filter((message) => message.conversationId === selectedConversation.id)
     : [];
+  const selectedSuggestedReply = selectedConversation
+    ? suggestedReplies.find(
+        (reply) =>
+          reply.conversationId === selectedConversation.id && reply.status === "DRAFT"
+      )
+    : undefined;
 
   async function handleSend() {
     const text = replyText.trim();
@@ -183,6 +198,7 @@ export function InboxWorkspace({
           onSend={handleSend}
           replyText={replyText}
           sendError={sendError}
+          suggestedReply={selectedSuggestedReply}
         />
       ) : (
         <section className="chat-empty-state">

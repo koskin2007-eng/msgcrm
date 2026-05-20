@@ -1,5 +1,6 @@
-import { Send, Truck, WandSparkles } from "lucide-react";
+import { Pencil, Send, Truck, UserRoundCheck, WandSparkles } from "lucide-react";
 import { quickReplyTemplates } from "../../lib/mock-data";
+import type { SuggestedReply } from "../../lib/types";
 import { Button } from "../ui/Button";
 import { Textarea } from "../ui/Input";
 
@@ -10,6 +11,7 @@ interface ReplyBoxProps {
   canReply?: boolean;
   isSending?: boolean;
   sendError?: string | null;
+  suggestedReply?: SuggestedReply;
   onChange: (value: string) => void;
   onSend: () => void | Promise<void>;
   onCreateDeal: () => void;
@@ -22,6 +24,7 @@ export function ReplyBox({
   canReply = true,
   isSending = false,
   sendError,
+  suggestedReply,
   onChange,
   onSend,
   onCreateDeal
@@ -40,6 +43,38 @@ export function ReplyBox({
           </button>
         ))}
       </div>
+
+      {suggestedReply ? (
+        <section className="ai-suggestion">
+          <div>
+            <strong>Предложенный ответ агента</strong>
+            <span>режим подтверждения менеджером</span>
+          </div>
+          <p>{suggestedReply.text}</p>
+          <div className="ai-suggestion-actions">
+            <Button
+              disabled={!canReply}
+              onClick={() => onChange(suggestedReply.text)}
+              variant="secondary"
+            >
+              <WandSparkles size={16} />
+              Использовать
+            </Button>
+            <Button
+              disabled={!canReply}
+              onClick={() => onChange(suggestedReply.text)}
+              variant="ghost"
+            >
+              <Pencil size={16} />
+              Редактировать
+            </Button>
+            <Button disabled={!canReply} variant="ghost">
+              <UserRoundCheck size={16} />
+              Передать человеку
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       <Textarea
         aria-label="Ответ клиенту"

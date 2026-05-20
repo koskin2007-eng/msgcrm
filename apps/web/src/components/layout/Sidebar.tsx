@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Bot,
+  BookOpen,
   Handshake,
   Inbox,
-  Megaphone,
-  MessageSquareText,
-  Plug,
+  Send,
   Settings,
-  Truck,
   UserRound,
   Users
 } from "lucide-react";
@@ -21,17 +20,16 @@ import type { Platform } from "../../lib/types";
 
 const menuItems = [
   { href: "/inbox", label: "Входящие", icon: Inbox },
+  { href: "/agents", label: "Агенты", icon: Bot },
+  { href: "/knowledge", label: "База знаний", icon: BookOpen },
+  { href: "/integrations/telegram", label: "Telegram", icon: Send },
   { href: "/deals", label: "Сделки", icon: Handshake },
-  { href: "/listings", label: "Объявления", icon: Megaphone },
-  { href: "/templates", label: "Быстрые ответы", icon: MessageSquareText },
-  { href: "/integrations", label: "Интеграции", icon: Plug },
   { href: "/team", label: "Команда", icon: Users },
-  { href: "/delivery", label: "Доставка", icon: Truck },
   { href: "/profile", label: "Личные данные", icon: UserRound },
   { href: "/settings", label: "Настройки", icon: Settings }
 ];
 
-const channelOrder: Platform[] = ["avito", "drom", "youla", "vk", "telegram"];
+const channelOrder: Platform[] = ["telegram", "avito", "drom", "youla", "vk"];
 
 interface SidebarProps {
   role: AuthRole;
@@ -47,7 +45,7 @@ export function Sidebar({ role }: SidebarProps) {
         <span className="logo-mark">M</span>
         <span>
           <strong>MsgCRM</strong>
-          <small>Единое окно продаж</small>
+          <small>Telegram AI Agents</small>
         </span>
       </Link>
 
@@ -71,13 +69,13 @@ export function Sidebar({ role }: SidebarProps) {
           {channelOrder.map((platform) => {
             const accounts = connectedAccounts.filter((account) => account.platform === platform);
             const unreadCount = accounts.reduce((sum, account) => sum + account.unreadCount, 0);
-            const isActive = platform === "avito";
-            const isSoon = platform !== "avito";
+            const isActive = platform === "telegram";
+            const isSoon = platform !== "telegram";
 
             return (
               <div className={`channel-item ${isActive ? "active" : ""} ${isSoon ? "soon" : ""}`} key={platform}>
                 <span>{platformLabel(platform)}</span>
-                {isSoon ? <small>скоро</small> : <strong>{unreadCount}</strong>}
+                {isSoon ? <small>{platform === "avito" ? "future" : "скоро"}</small> : <strong>{unreadCount}</strong>}
               </div>
             );
           })}

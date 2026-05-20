@@ -10,6 +10,10 @@ const salesOperatorRoles: NormalizedRole[] = ["owner", "admin", "manager"];
 
 const routeRoles: Record<string, NormalizedRole[]> = {
   "/inbox": allRoles,
+  "/agents": allRoles,
+  "/agents/new": workspaceManagerRoles,
+  "/knowledge": allRoles,
+  "/integrations/telegram": allRoles,
   "/deals": allRoles,
   "/listings": allRoles,
   "/templates": allRoles,
@@ -41,6 +45,18 @@ export function canManageTeam(role: AnyRole) {
 }
 
 export function canManageIntegrations(role: AnyRole) {
+  return canManageWorkspace(role);
+}
+
+export function canManageAgents(role: AnyRole) {
+  return canManageWorkspace(role);
+}
+
+export function canManageKnowledge(role: AnyRole) {
+  return canManageWorkspace(role);
+}
+
+export function canManageTelegram(role: AnyRole) {
   return canManageWorkspace(role);
 }
 

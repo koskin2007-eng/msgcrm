@@ -39,6 +39,12 @@ storage/
 # Secrets, credentials, keys, and cookies
 secrets/
 credentials/
+private/
+*.secret
+*.secrets
+*.credentials
+*telegram*token*
+*openai*key*
 *.pem
 *.key
 *.crt

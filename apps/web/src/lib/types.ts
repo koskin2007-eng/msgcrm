@@ -40,6 +40,12 @@ export type DeliveryStatus =
   | "shipped"
   | "delivered";
 
+export type AgentMode = "approval" | "manual" | "auto_reply";
+
+export type TelegramIntegrationStatus = "CONNECTED" | "DISCONNECTED" | "ERROR";
+
+export type SuggestedReplyStatus = "DRAFT" | "APPROVED" | "REJECTED" | "SENT";
+
 export interface Company {
   id: string;
   name: string;
@@ -115,6 +121,17 @@ export interface Message {
   createdAt: string;
 }
 
+export interface SuggestedReply {
+  id: string;
+  companyId: string;
+  conversationId: string;
+  messageId: string | null;
+  agentId: string | null;
+  text: string;
+  status: SuggestedReplyStatus;
+  createdAt: string;
+}
+
 export interface Deal {
   id: string;
   companyId: string;
@@ -143,4 +160,58 @@ export interface DeliveryOption {
   status: ConnectedAccountStatus;
   priceLabel?: string;
   etaLabel?: string;
+}
+
+export interface Agent {
+  id: string;
+  companyId: string;
+  name: string;
+  role: string;
+  tone: string;
+  instructions: string;
+  restrictions: string | null;
+  handoffRules: string | null;
+  isActive: boolean;
+  mode: AgentMode;
+  assignedTelegramBot: {
+    id: string;
+    displayName: string;
+    botUsername: string | null;
+    status: TelegramIntegrationStatus | string;
+  } | null;
+  knowledgeDocumentIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface KnowledgeDocument {
+  id: string;
+  companyId: string | null;
+  title: string;
+  source: string | null;
+  body: string;
+  chunksCount: number;
+  agentIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TelegramBotIntegration {
+  id: string;
+  companyId: string;
+  agentId: string | null;
+  displayName: string;
+  botUsername: string | null;
+  webhookUrl: string | null;
+  status: TelegramIntegrationStatus;
+  mode: AgentMode;
+  approvalRequired: boolean;
+  autoReplyEnabled: boolean;
+  lastWebhookAt: string | null;
+  agent: {
+    id: string;
+    name: string;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
 }

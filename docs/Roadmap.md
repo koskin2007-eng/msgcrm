@@ -1,5 +1,30 @@
 # MsgCRM — Roadmap
 
+## Current Strategic Focus — Telegram AI Agents MVP
+
+Goal:
+
+Turn MsgCRM into a control panel for Telegram AI agents while preserving the existing login, company/workspace, team, roles, profile, integrations, inbox, and knowledge-base foundation.
+
+Features:
+
+- `/agents` page;
+- create/edit AI agent;
+- agent role, tone, instructions, restrictions, and handoff rules;
+- `/knowledge` page using the existing `KnowledgeDocument` / `KnowledgeChunk` model;
+- Telegram bot integration;
+- Telegram webhook endpoint;
+- incoming Telegram messages;
+- OpenAI suggested replies;
+- approval mode by default;
+- optional auto-reply mode later.
+
+Expected result:
+
+A business can create an AI agent, upload knowledge, connect a Telegram bot, receive Telegram conversations, and approve AI-prepared replies from MsgCRM.
+
+---
+
 ## Stage 1 — UI MVP
 
 Goal:

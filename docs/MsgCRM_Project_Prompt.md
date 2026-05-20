@@ -1,5 +1,69 @@
 # MsgCRM — Project Prompt для Codex
 
+## Strategic Pivot — Telegram AI Agents MVP
+
+MsgCRM is now focused on the **Telegram AI Agents** MVP.
+
+New product formulation:
+
+> MsgCRM is a platform where a business creates an AI agent, uploads instructions, regulations, FAQ, and knowledge documents, connects a Telegram bot, and receives OpenAI-powered suggested replies for Telegram customers.
+
+Current MVP focus:
+
+- MsgCRM user account, company/workspace, team, roles, profile, and auth remain unchanged.
+- Avito-first CRM work is paused and kept as a future B2B integration direction.
+- Existing integrations, inbox, conversations, and knowledge-base architecture should be reused.
+- The server is the bridge between Telegram and OpenAI.
+- Telegram bot tokens and OpenAI API keys must never be committed to GitHub.
+
+Target Telegram flow:
+
+```text
+Client writes to Telegram
+Telegram sends webhook to MsgCRM backend
+Backend resolves Telegram bot, company, and assigned agent
+Backend loads agent instructions and company knowledge
+Backend calls OpenAI if OPENAI_API_KEY is configured
+Backend stores a suggested reply
+Manager approves or edits the reply in MsgCRM
+```
+
+New MVP entities:
+
+- `Agent`
+- `TelegramBotIntegration`
+- `SuggestedReply`
+- `AgentKnowledgeLink`
+
+New MVP pages:
+
+- `/agents`
+- `/agents/new`
+- `/agents/[id]`
+- `/knowledge`
+- `/integrations/telegram`
+
+Main menu focus:
+
+- Входящие
+- Агенты
+- База знаний
+- Telegram
+- Сделки
+- Команда
+- Личные данные
+- Настройки
+
+Default agent mode:
+
+- `approvalRequired = true`
+- AI prepares a draft reply
+- Manager confirms or edits before sending
+
+Auto-reply remains a future option and must not be enabled by default.
+
+---
+
 ## Назначение документа
 
 Этот документ описывает первый MVP веб-интерфейса проекта **MsgCRM**.

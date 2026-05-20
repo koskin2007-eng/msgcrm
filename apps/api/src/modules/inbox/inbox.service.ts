@@ -19,6 +19,11 @@ export class InboxService {
         messages: {
           orderBy: { sentAt: "desc" },
           take: 1
+        },
+        suggestedReplies: {
+          where: { status: "DRAFT" },
+          orderBy: { createdAt: "desc" },
+          take: 1
         }
       },
       orderBy: [{ lastMessageAt: "desc" }, { updatedAt: "desc" }]
@@ -64,6 +69,18 @@ export class InboxService {
               sentAt: lastMessage.sentAt.toISOString()
             }
           : null,
+        suggestedReply: conversation.suggestedReplies[0]
+          ? {
+              id: conversation.suggestedReplies[0].id,
+              companyId: conversation.suggestedReplies[0].companyId,
+              conversationId: conversation.suggestedReplies[0].conversationId,
+              messageId: conversation.suggestedReplies[0].messageId,
+              agentId: conversation.suggestedReplies[0].agentId,
+              text: conversation.suggestedReplies[0].text,
+              status: conversation.suggestedReplies[0].status,
+              createdAt: conversation.suggestedReplies[0].createdAt.toISOString()
+            }
+          : null,
         lastMessageAt: conversation.lastMessageAt?.toISOString() ?? null,
         unreadCount: 0
       };
@@ -83,6 +100,11 @@ export class InboxService {
         assignee: true,
         messages: {
           orderBy: { sentAt: "asc" }
+        },
+        suggestedReplies: {
+          where: { status: "DRAFT" },
+          orderBy: { createdAt: "desc" },
+          take: 1
         }
       }
     });
@@ -126,7 +148,19 @@ export class InboxService {
         authorType: message.authorType,
         text: message.text,
         sentAt: message.sentAt.toISOString()
-      }))
+      })),
+      suggestedReply: conversation.suggestedReplies[0]
+        ? {
+            id: conversation.suggestedReplies[0].id,
+            companyId: conversation.suggestedReplies[0].companyId,
+            conversationId: conversation.suggestedReplies[0].conversationId,
+            messageId: conversation.suggestedReplies[0].messageId,
+            agentId: conversation.suggestedReplies[0].agentId,
+            text: conversation.suggestedReplies[0].text,
+            status: conversation.suggestedReplies[0].status,
+            createdAt: conversation.suggestedReplies[0].createdAt.toISOString()
+          }
+        : null
     };
   }
 

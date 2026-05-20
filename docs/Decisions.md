@@ -38,6 +38,24 @@ If a user does not have the required Avito subscription level or company authori
 
 ---
 
+## 2026-05-21 — Strategic pivot to Telegram AI Agents
+
+Decision:
+
+- Avito Messenger API direction is paused as a future B2B integration.
+- New MVP focus: Telegram AI Agents.
+- Existing auth, workspace, team, role, profile, integrations, inbox, and knowledge-base architecture remains.
+- MsgCRM becomes a control panel for Telegram AI agents, not a heavy CRM rewrite.
+- The server acts as the bridge between Telegram and OpenAI: Telegram sends webhooks to MsgCRM backend, backend loads company/agent/knowledge context, backend calls OpenAI, and MsgCRM stores suggested replies.
+- Approval mode is the default: AI prepares a reply, and a manager approves or edits it before sending.
+- Telegram bot tokens and OpenAI API keys must never be committed to GitHub, mock data, seed scripts, or docs.
+
+Reason:
+
+The fastest useful MVP is a focused Telegram AI-agent workflow for support and sales. The existing workspace and permission structure already solves the hardest multi-tenant foundation, so the pivot should reuse it instead of rebuilding the product.
+
+---
+
 ## 2026-05-21 — Database-backed integrations MVP
 
 Decision:

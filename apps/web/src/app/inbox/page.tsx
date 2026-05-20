@@ -29,6 +29,7 @@ export default async function InboxPage() {
         conversations={inbox.conversations}
         listings={inbox.listings}
         messages={inbox.messages}
+        suggestedReplies={inbox.suggestedReplies}
       />
     </AppLayout>
   );

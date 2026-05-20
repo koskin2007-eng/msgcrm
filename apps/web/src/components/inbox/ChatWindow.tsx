@@ -1,6 +1,12 @@
 import { getConnectedAccount, getListing } from "../../lib/mock-data";
 import { formatCurrency, platformLabel } from "../../lib/format";
-import type { ConnectedAccount, Conversation, Listing, Message } from "../../lib/types";
+import type {
+  ConnectedAccount,
+  Conversation,
+  Listing,
+  Message,
+  SuggestedReply
+} from "../../lib/types";
 import { ConversationStatusBadge } from "../ui/StatusBadge";
 import { CustomerCard } from "./CustomerCard";
 import { DeliveryCard } from "./DeliveryCard";
@@ -19,6 +25,7 @@ interface ChatWindowProps {
   listing?: Listing;
   replyText: string;
   sendError?: string | null;
+  suggestedReply?: SuggestedReply;
   onReplyTextChange: (value: string) => void;
   onSend: () => void | Promise<void>;
   onCreateDeal: () => void;
@@ -35,6 +42,7 @@ export function ChatWindow({
   listing: listingOverride,
   replyText,
   sendError,
+  suggestedReply,
   onReplyTextChange,
   onSend,
   onCreateDeal
@@ -80,6 +88,7 @@ export function ChatWindow({
           onCreateDeal={onCreateDeal}
           onSend={onSend}
           sendError={sendError}
+          suggestedReply={suggestedReply}
           value={replyText}
         />
       </section>

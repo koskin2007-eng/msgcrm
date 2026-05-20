@@ -686,6 +686,44 @@ td {
   gap: 10px;
 }
 
+.ai-suggestion {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgb(37 99 235 / 18%);
+  border-radius: 16px;
+  background: #f8fbff;
+  padding: 12px;
+}
+
+.ai-suggestion > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-suggestion strong {
+  font-size: 14px;
+}
+
+.ai-suggestion span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ai-suggestion p {
+  color: #1f2937;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ai-suggestion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .right-info-panel {
   display: grid;
   align-content: start;
@@ -784,6 +822,130 @@ td {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+}
+
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.agent-card,
+.agent-editor-card,
+.knowledge-editor-card,
+.knowledge-list-card,
+.telegram-connect-card,
+.telegram-list-card,
+.telegram-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.agent-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.agent-card-head,
+.knowledge-item-head,
+.telegram-card-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.agent-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.agent-card h3,
+.knowledge-item h3,
+.telegram-card h3 {
+  font-size: 16px;
+}
+
+.agent-card p,
+.knowledge-editor-card p,
+.telegram-connect-card p,
+.knowledge-item-head p,
+.telegram-card-head p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.agent-editor-card,
+.knowledge-editor-card,
+.knowledge-list-card,
+.telegram-connect-card,
+.telegram-list-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.agent-form,
+.knowledge-form,
+.telegram-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.agent-form label,
+.knowledge-form label,
+.telegram-form label {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.knowledge-layout,
+.telegram-layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.75fr) minmax(0, 1.25fr);
+  gap: 16px;
+}
+
+.knowledge-list,
+.telegram-list {
+  display: grid;
+  gap: 12px;
+}
+
+.knowledge-item,
+.telegram-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.knowledge-item {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.knowledge-item > p {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 .integration-grid.compact {
@@ -1168,7 +1330,8 @@ td {
 
   .integration-grid,
   .template-grid,
-  .settings-grid {
+  .settings-grid,
+  .agent-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1196,6 +1359,8 @@ td {
 
   .inbox-workspace,
   .delivery-layout,
+  .knowledge-layout,
+  .telegram-layout,
   .team-invite-form,
   .team-invite-link span {
     grid-template-columns: 1fr;
@@ -1225,8 +1390,12 @@ td {
   .integration-grid,
   .template-grid,
   .settings-grid,
+  .agent-grid,
   .form-grid,
   .profile-form,
+  .agent-form,
+  .knowledge-form,
+  .telegram-form,
   .auth-form.two-columns {
     grid-template-columns: 1fr;
   }

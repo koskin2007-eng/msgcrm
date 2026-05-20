@@ -4,9 +4,13 @@ import type {
   Conversation,
   Deal,
   DeliveryOption,
+  Agent,
+  KnowledgeDocument,
   Listing,
   Message,
   QuickReplyTemplate,
+  SuggestedReply,
+  TelegramBotIntegration,
   TeamMember,
   User
 } from "./types";
@@ -22,8 +26,85 @@ export const currentUser: User = {
   companyId: company.id,
   name: "Павел",
   email: "owner@example.test",
+  phone: "mock-phone",
   role: "owner"
 };
+
+export const agents: Agent[] = [
+  {
+    id: "agent_support",
+    companyId: company.id,
+    name: "Telegram помощник",
+    role: "AI-менеджер поддержки и продаж",
+    tone: "Вежливый, уверенный, короткий",
+    instructions:
+      "Отвечай на вопросы клиентов по базе знаний, уточняй город, ПВЗ и контакты, если нужно оформить заказ.",
+    restrictions:
+      "Не обещай скидки, наличие или сроки доставки, если этого нет в базе знаний.",
+    handoffRules:
+      "Передавай человеку спорные ситуации, вопросы по оплате, претензии и нестандартные условия.",
+    isActive: true,
+    mode: "approval",
+    assignedTelegramBot: {
+      id: "telegram_bot_support",
+      displayName: "Telegram Support Bot",
+      botUsername: "mock_support_bot",
+      status: "CONNECTED"
+    },
+    knowledgeDocumentIds: ["knowledge_faq"],
+    createdAt: "2026-05-21T09:00:00.000Z",
+    updatedAt: "2026-05-21T09:00:00.000Z"
+  }
+];
+
+export const knowledgeDocuments: KnowledgeDocument[] = [
+  {
+    id: "knowledge_faq",
+    companyId: company.id,
+    title: "FAQ по заказам и доставке",
+    source: "manual",
+    body:
+      "Товар можно забрать самовывозом или оформить доставку через СДЭК/Ozon Delivery. Для расчета доставки нужен город, ПВЗ и телефон клиента.",
+    chunksCount: 1,
+    agentIds: ["agent_support"],
+    createdAt: "2026-05-21T09:05:00.000Z",
+    updatedAt: "2026-05-21T09:05:00.000Z"
+  },
+  {
+    id: "knowledge_rules",
+    companyId: company.id,
+    title: "Регламент ответа менеджера",
+    source: "manual",
+    body:
+      "Сначала подтвердить наличие товара, затем уточнить способ получения. Если клиент просит скидку или спорит по оплате, передать диалог менеджеру.",
+    chunksCount: 1,
+    agentIds: ["agent_support"],
+    createdAt: "2026-05-21T09:10:00.000Z",
+    updatedAt: "2026-05-21T09:10:00.000Z"
+  }
+];
+
+export const telegramBotIntegrations: TelegramBotIntegration[] = [
+  {
+    id: "telegram_bot_support",
+    companyId: company.id,
+    agentId: "agent_support",
+    displayName: "Telegram Support Bot",
+    botUsername: "mock_support_bot",
+    webhookUrl: "https://api.msgcrm.ru/api/telegram/webhook/mock-webhook-secret",
+    status: "CONNECTED",
+    mode: "approval",
+    approvalRequired: true,
+    autoReplyEnabled: false,
+    lastWebhookAt: "2026-05-21T09:30:00.000Z",
+    agent: {
+      id: "agent_support",
+      name: "Telegram помощник"
+    },
+    createdAt: "2026-05-21T09:20:00.000Z",
+    updatedAt: "2026-05-21T09:30:00.000Z"
+  }
+];
 
 export const connectedAccounts: ConnectedAccount[] = [
   {
@@ -94,9 +175,9 @@ export const connectedAccounts: ConnectedAccount[] = [
     companyId: company.id,
     platform: "telegram",
     title: "Telegram",
-    status: "coming_soon",
-    unreadCount: 0,
-    description: "Боты и клиентские чаты"
+    status: "connected",
+    unreadCount: 4,
+    description: "AI-агенты и клиентские чаты Telegram"
   }
 ];
 
@@ -287,6 +368,20 @@ export const messages: Message[] = [
     sender: "customer",
     text: "Можно сегодня забрать?",
     createdAt: "2026-05-19T15:55:00.000Z"
+  }
+];
+
+export const suggestedReplies: SuggestedReply[] = [
+  {
+    id: "suggested_reply_ivan",
+    companyId: company.id,
+    conversationId: "conversation_ivan",
+    messageId: "message_5",
+    agentId: "agent_support",
+    text:
+      "Иван, доставка до ПВЗ рассчитывается по городу и выбранному пункту выдачи. Напишите, пожалуйста, город, ближайший ПВЗ и телефон, я рассчитаю стоимость.",
+    status: "DRAFT",
+    createdAt: "2026-05-19T16:47:00.000Z"
   }
 ];
 

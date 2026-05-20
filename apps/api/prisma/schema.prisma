@@ -38,6 +38,19 @@ enum UserRole {
   VIEWER
 }
 
+enum TelegramBotStatus {
+  DISCONNECTED
+  CONNECTED
+  ERROR
+}
+
+enum SuggestedReplyStatus {
+  DRAFT
+  APPROVED
+  REJECTED
+  SENT
+}
+
 model Company {
   id        String   @id @default(uuid())
   name      String
@@ -50,6 +63,10 @@ model Company {
   listings           Listing[]
   conversations      Conversation[]
   knowledgeDocuments KnowledgeDocument[]
+  agents             Agent[]
+  agentKnowledgeLinks AgentKnowledgeLink[]
+  telegramBotIntegrations TelegramBotIntegration[]
+  suggestedReplies   SuggestedReply[]
 }
 
 model User {
@@ -164,6 +181,7 @@ model Conversation {
   listing        Listing?       @relation(fields: [listingId], references: [id])
   assignee       User?          @relation("ConversationAssignee", fields: [assigneeId], references: [id])
   messages       Message[]
+  suggestedReplies SuggestedReply[]
 
   @@unique([channelAccountId, externalId])
   @@index([companyId])
@@ -181,6 +199,7 @@ model Message {
   createdAt      DateTime          @default(now())
 
   conversation Conversation @relation(fields: [conversationId], references: [id])
+  suggestedReplies SuggestedReply[]
 
   @@unique([conversationId, externalId])
   @@index([conversationId, sentAt])
@@ -197,6 +216,7 @@ model KnowledgeDocument {
 
   company Company?         @relation(fields: [companyId], references: [id])
   chunks  KnowledgeChunk[]
+  agentLinks AgentKnowledgeLink[]
 
   @@index([companyId])
 }
@@ -209,4 +229,86 @@ model KnowledgeChunk {
   createdAt  DateTime @default(now())
 
   document KnowledgeDocument @relation(fields: [documentId], references: [id])
+}
+
+model Agent {
+  id           String   @id @default(uuid())
+  companyId    String
+  name         String
+  role         String
+  tone         String
+  instructions String
+  restrictions String?
+  handoffRules String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  knowledgeLinks AgentKnowledgeLink[]
+  telegramBotIntegrations TelegramBotIntegration[]
+  suggestedReplies SuggestedReply[]
+
+  @@index([companyId])
+  @@index([companyId, isActive])
+}
+
+model AgentKnowledgeLink {
+  id         String   @id @default(uuid())
+  companyId  String
+  agentId    String
+  documentId String
+  createdAt  DateTime @default(now())
+
+  company  Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  agent    Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, documentId])
+  @@index([companyId])
+  @@index([documentId])
+}
+
+model TelegramBotIntegration {
+  id               String            @id @default(uuid())
+  companyId        String
+  agentId          String?
+  displayName      String
+  botUsername      String?
+  botTokenEncrypted String?
+  webhookSecret    String            @unique
+  status           TelegramBotStatus @default(DISCONNECTED)
+  autoReplyEnabled Boolean           @default(false)
+  approvalRequired Boolean           @default(true)
+  lastWebhookAt    DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  agent   Agent?  @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([agentId])
+}
+
+model SuggestedReply {
+  id             String               @id @default(uuid())
+  companyId      String
+  conversationId String
+  messageId      String?
+  agentId        String?
+  text           String
+  status         SuggestedReplyStatus @default(DRAFT)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  message      Message?     @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  agent        Agent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([conversationId])
+  @@index([messageId])
+  @@index([agentId])
 }
